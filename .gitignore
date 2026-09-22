@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Mileast display font — DEMO licence, personal use only.
+# Not redistributed with this repo; the site uses Playfair Display (SIL OFL).
+# Commercial licence: https://sronstudio.com/product/mileast-display-serif-font/
+Fonts/
+assets/fonts/Mileast*.woff2

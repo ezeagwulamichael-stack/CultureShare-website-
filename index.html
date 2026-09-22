@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CultureShare — Telling Our Own Stories, Our Own Way</title>
+<meta name="description" content="CultureShare is a cultural community built for discovering, documenting and sharing African stories, traditions, people and heritage — in our own voices, on our own terms." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://images.pexels.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500..900;1,500..900&family=Urbanist:wght@300..800&display=swap" rel="stylesheet" />
+<link rel="preload" href="assets/img/hero-base.jpg" as="image" fetchpriority="high" />
+<link rel="stylesheet" href="css/style.css?v=2" />
+</head>
+<body>
+
+<!-- ─────────── PRELOADER ─────────── -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__in">
+    <span class="loader__cs">CS</span>
+    <span class="loader__word serif">CultureShare</span>
+    <span class="loader__bar"><i></i></span>
+  </div>
+</div>
+
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- ─────────── HEADER ─────────── -->
+<header class="head" id="head">
+  <div class="head__in">
+    <a class="logo" href="#top" aria-label="CultureShare home">
+      <span class="logo__cs" aria-hidden="true">CS</span>
+      <span class="logo__word serif">CultureShare</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      <a href="#top" class="on">Home</a>
+      <a href="#about">About Us</a>
+      <a href="#contact">Contact Us</a>
+    </nav>
+
+    <div class="head__cta">
+      <a href="#waitlist" class="btn btn--gold btn--sm mag" data-scroll>
+        Join the Waitlist
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg>
+      </a>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mmenu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ─────────── MOBILE MENU ─────────── -->
+<div class="mmenu" id="mmenu" aria-hidden="true">
+  <nav class="mmenu__in">
+    <a href="#top" data-scroll><i>01</i><span class="serif">Home</span></a>
+    <a href="#about" data-scroll><i>02</i><span class="serif">About Us</span></a>
+    <a href="#contact" data-scroll><i>03</i><span class="serif">Contact Us</span></a>
+    <a href="#waitlist" class="gold" data-scroll><i>04</i><span class="serif">Join the Waitlist</span></a>
+    <p>Telling our own stories, our own way.</p>
+  </nav>
+</div>
+
+<main id="top">
+
+<!-- ═══════════ 01 · HERO ═══════════ -->
+<section class="hero" id="hero">
+  <div class="hero__bg" id="heroBg">
+    <div class="hero__plate">
+      <img class="hero__art" src="assets/img/hero-base.jpg" fetchpriority="high"
+           alt="A glowing sphere of light rising from a phone in a dark room" />
+      <img class="hero__art hero__spin" src="assets/img/hero-sphere.webp" alt="" aria-hidden="true" />
+    </div>
+    <span class="hero__veil"></span>
+    <span class="hero__grain" aria-hidden="true"></span>
+  </div>
+
+  <div class="hero__in" id="heroIn">
+    <h1 class="hero__h serif">
+      <span class="ln">
+        <em class="w">Tell</em>
+        <em class="w">Your</em>
+        <b class="cap" data-pool="a" aria-hidden="true"></b>
+        <em class="w">Story,</em>
+      </span>
+      <span class="ln">
+        <b class="cap cap--wide" data-pool="b" aria-hidden="true"></b>
+        <em class="w">Your</em>
+        <em class="w">World,</em>
+        <b class="cap" data-pool="c" aria-hidden="true"></b>
+      </span>
+      <span class="ln">
+        <b class="cap cap--sm" data-pool="d" aria-hidden="true"></b>
+        <em class="w gold">Culture</em>
+        <b class="cap cap--sm" data-pool="e" aria-hidden="true"></b>
+        <em class="w gold">Preserved.</em>
+        <b class="cap cap--sm" data-pool="f" aria-hidden="true"></b>
+      </span>
+    </h1>
+
+    <p class="hero__p rv" data-d="620">
+      CultureShare is a cultural community built for discovering, documenting and sharing African
+      stories, traditions, people and heritage – in our own voices, on our own terms.
+    </p>
+
+    <div class="hero__btns rv" data-d="740">
+      <a href="#waitlist" class="btn btn--gold mag" data-scroll>
+        Join the Waitlist
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg>
+      </a>
+      <a href="#problem" class="btn btn--glass mag" data-scroll>Discover CultureShare</a>
+    </div>
+  </div>
+
+  <span class="hero__cue" aria-hidden="true"><i></i></span>
+</section>
+
+<!-- ═══════════ 02 · CULTURAL PROBLEM ═══════════ -->
+<section class="prob" id="problem">
+  <div class="prob__stage">
+    <span class="dome__ticks" aria-hidden="true"></span>
+    <div class="dome" id="dome">
+      <figure class="pol" style="--a:-50.1deg"><img src="https://images.pexels.com/photos/36106923/pexels-photo-36106923.jpeg?auto=compress&cs=tinysrgb&w=520" alt="An elderly African woman in vibrant traditional attire" loading="lazy" /></figure>
+      <figure class="pol" style="--a:-33.4deg"><img src="https://images.pexels.com/photos/31095002/pexels-photo-31095002.jpeg?auto=compress&cs=tinysrgb&w=520" alt="A woman cooking a traditional meal outdoors" loading="lazy" /></figure>
+      <figure class="pol" style="--a:-16.7deg"><img src="https://images.pexels.com/photos/34734122/pexels-photo-34734122.jpeg?auto=compress&cs=tinysrgb&w=520" alt="A traditional African ceremony in progress" loading="lazy" /></figure>
+      <figure class="pol" style="--a:0deg"><img src="https://images.pexels.com/photos/30803489/pexels-photo-30803489.jpeg?auto=compress&cs=tinysrgb&w=520" alt="A dancer performing in traditional cultural attire" loading="lazy" /></figure>
+      <figure class="pol" style="--a:16.7deg"><img src="https://images.pexels.com/photos/36773397/pexels-photo-36773397.jpeg?auto=compress&cs=tinysrgb&w=520" alt="A craftsman weaving Kente cloth on a traditional loom" loading="lazy" /></figure>
+      <figure class="pol" style="--a:33.4deg"><img src="https://images.pexels.com/photos/23490764/pexels-photo-23490764.jpeg?auto=compress&cs=tinysrgb&w=520" alt="A vendor selling fresh produce at a Lagos street market" loading="lazy" /></figure>
+      <figure class="pol" style="--a:50.1deg"><img src="https://images.pexels.com/photos/28530092/pexels-photo-28530092.jpeg?auto=compress&cs=tinysrgb&w=520" alt="Street musicians playing traditional drums" loading="lazy" /></figure>
+    </div>
+
+    <div class="wrap prob__body">
+      <span class="pill pill--line rv">
+        <i class="pill__ico" aria-hidden="true">
+          <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 2v12M2 8h12"/></svg>
+        </i>
+        The Cultural Problem
+      </span>
+      <h2 class="h1 serif rv" data-d="70">Our Culture Deserves<br />More Than Memories.</h2>
+      <p class="lead rv" data-d="130">
+        Across generations, stories are being lost. Languages disappear from everyday
+        conversations. Traditions become disconnected from the people who lived them.
+        Family stories remain trapped in memories, photographs and recordings.
+        CultureShare exists to change that.
+      </p>
+      <a href="#about" class="btn btn--pillcta mag rv" data-d="190" data-scroll>
+        <span>Discover CultureShare</span>
+        <i class="btn__badge" aria-hidden="true">
+          <svg viewBox="0 0 16 16"><path d="m4 3 4 5-4 5M9 3l4 5-4 5"/></svg>
+        </i>
+      </a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="stats rv" data-d="60">
+      <div class="stat"><b data-count="54" data-suffix="+">0</b><span>Countries</span></div>
+      <div class="stat"><b data-count="2000" data-suffix="+">0</b><span>Languages</span></div>
+      <div class="stat"><b data-count="3000" data-suffix="+">0</b><span>Ethnic Groups</span></div>
+      <div class="stat"><b class="inf">&#8734;</b><span>Stories to Tell</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 03 · LIVING ARCHIVE ═══════════ -->
+<section class="arch" id="about">
+  <div class="wrap arch__grid">
+
+    <!-- editorial statement panel -->
+    <article class="arch__panel rv">
+      <span class="arch__meta">Scroll · Cultural Media</span>
+      <h2 class="h2 serif">A Living Archive<br />of African Culture.</h2>
+      <span class="arch__rule" aria-hidden="true"></span>
+      <div class="arch__copy">
+        <p class="arch__intro">CultureShare is a digital cultural community where Africans can document, discover and share the stories that define who we are.</p>
+        <p>A Reel. A collection of images. A video.</p>
+        <p>An audio recording. A written story.</p>
+        <p>A short documentary. A combination of media.</p>
+        <p class="arch__punch">Every Story Becomes a Scroll.</p>
+        <p class="arch__foot">A Scroll can be a video Reel, a collection of curated images, high-fidelity audio recordings, a written oral history, or a complete short documentary. It is our heritage preserved in modern formats.</p>
+      </div>
+    </article>
+
+    <!-- two media tiles beneath the panel -->
+    <figure class="arch__tile arch__tile--a rv" data-d="90">
+      <img src="https://images.pexels.com/photos/8655023/pexels-photo-8655023.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="Bolts of vividly patterned African fabric stacked at a market" loading="lazy" />
+      <figcaption><span class="chip">Images</span></figcaption>
+    </figure>
+
+    <figure class="arch__tile arch__tile--b rv" data-d="150">
+      <img src="https://images.pexels.com/photos/28530092/pexels-photo-28530092.jpeg?auto=compress&cs=tinysrgb&w=1000" alt="Street musicians playing traditional drums" loading="lazy" />
+      <figcaption><span class="chip">Audio</span></figcaption>
+    </figure>
+
+    <!-- full-bleed feature image -->
+    <figure class="arch__hero rv" data-d="60">
+      <img src="https://images.pexels.com/photos/39068198/pexels-photo-39068198.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="A woman in vivid festival regalia during a traditional cultural celebration" loading="lazy" />
+      <figcaption><span class="chip chip--live"><i></i>New Scroll</span></figcaption>
+      <ul class="arch__social" aria-hidden="true"><li>Ig</li><li>X</li><li>Tk</li></ul>
+    </figure>
+
+  </div>
+</section>
+
+<!-- ═══════════ 04 · FIVE PILLARS ═══════════ -->
+<section class="why" id="pillars">
+  <div class="wrap">
+    <span class="pill pill--dark rv">Why CultureShare</span>
+
+    <h2 class="why__title serif" id="whyTitle">
+      <span class="ln"><em>Five</em> <em>Pillars,</em></span>
+      <span class="ln"><em>One</em> <em>Living</em> <em>Archive</em></span>
+    </h2>
+
+    <p class="why__sub rv" data-d="120">Most platforms are built to capture moments. We are built to preserve history, so it can educate the generations that come after us.</p>
+
+    <div class="why__meta rv" data-d="180">
+      <span class="why__faces" aria-hidden="true"><img src="https://images.pexels.com/photos/37042724/pexels-photo-37042724.jpeg?auto=compress&cs=tinysrgb&w=90" alt="" loading="lazy" /><img src="https://images.pexels.com/photos/18330807/pexels-photo-18330807.jpeg?auto=compress&cs=tinysrgb&w=90" alt="" loading="lazy" /><img src="https://images.pexels.com/photos/33826140/pexels-photo-33826140.jpeg?auto=compress&cs=tinysrgb&w=90" alt="" loading="lazy" /><img src="https://images.pexels.com/photos/13033125/pexels-photo-13033125.jpeg?auto=compress&cs=tinysrgb&w=90" alt="" loading="lazy" /><img src="https://images.pexels.com/photos/31656026/pexels-photo-31656026.jpeg?auto=compress&cs=tinysrgb&w=90" alt="" loading="lazy" /></span>
+      <b class="serif">3,000+</b>
+      <span class="why__metaLabel">Ethnic groups<br />&amp; tribes</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="pgrid5">
+      <article class="pcard pcard--1 rv" data-d="0">
+        <span class="pcard__art" aria-hidden="true">
+          <svg viewBox="0 0 300 460" preserveAspectRatio="xMidYMid slice" fill="currentColor"><circle cx="150" cy="34" r="188"/><circle cx="150" cy="432" r="196" opacity=".62"/></svg>
+        </span>
+        <span class="pcard__top">
+          <h3 class="serif">Preservation</h3>
+          <p>Traditions, languages and histories, kept permanent.</p>
+        </span>
+        <b class="pcard__n serif">01</b>
+      </article>
+      <article class="pcard pcard--2 rv" data-d="90">
+        <span class="pcard__art" aria-hidden="true">
+          <svg viewBox="0 0 300 460" preserveAspectRatio="xMidYMid slice" fill="currentColor"><circle cx="86" cy="250" r="132"/><circle cx="214" cy="250" r="132" opacity=".7"/><circle cx="150" cy="372" r="132" opacity=".52"/></svg>
+        </span>
+        <span class="pcard__top">
+          <h3 class="serif">Community</h3>
+          <p>Connecting Africans worldwide through shared heritage.</p>
+        </span>
+        <b class="pcard__n serif">02</b>
+      </article>
+      <article class="pcard pcard--3 rv" data-d="180">
+        <span class="pcard__art" aria-hidden="true">
+          <svg viewBox="0 0 300 460" preserveAspectRatio="xMidYMid slice" fill="currentColor"><circle cx="150" cy="292" r="178" opacity=".45"/><circle cx="150" cy="292" r="120" opacity=".6"/><circle cx="150" cy="292" r="62"/></svg>
+        </span>
+        <span class="pcard__top">
+          <h3 class="serif">Verification</h3>
+          <p>Historian-accredited review keeps knowledge authentic.</p>
+        </span>
+        <b class="pcard__n serif">03</b>
+      </article>
+      <article class="pcard pcard--4 rv" data-d="270">
+        <span class="pcard__art" aria-hidden="true">
+          <svg viewBox="0 0 300 460" preserveAspectRatio="xMidYMid slice" fill="currentColor"><g fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><path d="M-30 470a120 120 0 0 1 120-120" opacity=".85"/><path d="M-30 470a210 210 0 0 1 210-210" opacity=".62"/><path d="M-30 470a300 300 0 0 1 300-300" opacity=".44"/><path d="M-30 470a390 390 0 0 1 390-390" opacity=".28"/></g></svg>
+        </span>
+        <span class="pcard__top">
+          <h3 class="serif">Discovery</h3>
+          <p>Explore cultures and traditions beyond your own.</p>
+        </span>
+        <b class="pcard__n serif">04</b>
+      </article>
+      <article class="pcard pcard--5 rv" data-d="360">
+        <span class="pcard__art" aria-hidden="true">
+          <svg viewBox="0 0 300 460" preserveAspectRatio="xMidYMid slice" fill="currentColor"><circle cx="62" cy="132" r="126"/><circle cx="246" cy="344" r="158" opacity=".58"/></svg>
+        </span>
+        <span class="pcard__top">
+          <h3 class="serif">Creator Economy</h3>
+          <p>Earn. Create for quality cultural contributions.</p>
+        </span>
+        <b class="pcard__n serif">05</b>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 05 · EXPLORE ═══════════ -->
+<section class="expl" id="explore">
+  <div class="wrap">
+    <header class="sec sec--c">
+      <span class="pill pill--dark rv">Choose Your Journey</span>
+      <h2 class="h1 serif rv" data-d="70">Explore Beyond What You Know.</h2>
+      <p class="sub rv" data-d="130">Dive deep into the roots of dynamic societies. Discover tribes, rites, ceremonies, artistic expression, and historical physical monuments.</p>
+    </header>
+  </div>
+
+  <div class="strip" id="strip">
+    <button class="sl on" data-i="0" aria-label="Crafts and trade">
+      <img src="https://images.pexels.com/photos/36773397/pexels-photo-36773397.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="A craftsman weaving Kente cloth on a traditional loom" loading="lazy" />
+      <span class="sl__cap"><i>01</i><b class="serif">Crafts &amp; Trade</b><em>Looms, dye pits, markets and the hands that keep them.</em></span>
+    </button>
+    <button class="sl" data-i="1" aria-label="Cultural attire">
+      <img src="https://images.pexels.com/photos/30518545/pexels-photo-30518545.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="A portrait showcasing traditional African patterns and adornment" loading="lazy" />
+      <span class="sl__cap"><i>02</i><b class="serif">Attire &amp; Ornaments</b><em>What we wear, and everything it says without speaking.</em></span>
+    </button>
+    <button class="sl" data-i="2" aria-label="Architecture and monuments">
+      <img src="https://images.pexels.com/photos/5504504/pexels-photo-5504504.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="The clay architecture of Ait Benhaddou, a historic desert fortification" loading="lazy" />
+      <span class="sl__cap"><i>03</i><b class="serif">Monuments</b><em>Earth architecture that has outlived every empire around it.</em></span>
+    </button>
+    <button class="sl" data-i="3" aria-label="Tribes and people">
+      <img src="https://images.pexels.com/photos/13033079/pexels-photo-13033079.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="Portrait of a Maasai warrior in traditional beaded headdress" loading="lazy" />
+      <span class="sl__cap"><i>04</i><b class="serif">Tribes &amp; People</b><em>Fifty-four countries, three thousand ways of being.</em></span>
+    </button>
+  </div>
+</section>
+
+<!-- ═══════════ 06 · PEOPLE ═══════════ -->
+<section class="ppl" id="people">
+  <span class="ppl__grid" aria-hidden="true"></span>
+
+  <div class="wrap ppl__split">
+
+    <!-- ── statement ── -->
+    <div class="ppl__say">
+      <span class="pill pill--icon rv">
+        <i aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 1.5 9.6 6l4.4 1.5L9.6 9 8 13.5 6.4 9 2 7.5 6.4 6z"/></svg></i>
+        Meet the Community
+      </span>
+      <h2 class="ppl__h serif rv" data-d="60">Follow the People Who <em>Keep Culture Moving.</em></h2>
+      <p class="ppl__p rv" data-d="120">Connect with Raiders (creative documentarians sharing rich heritage) and Historians (vetted specialists and elders who validate historical lineage and cultural facts).</p>
+      <a href="#waitlist" class="btn btn--ink mag rv" data-d="180" data-scroll>
+        Join the Waitlist
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg>
+      </a>
+    </div>
+
+    <!-- ── floating collage ── -->
+    <div class="ppl__stage" id="pplStage">
+      <div class="ccol">
+
+        <div class="cc rv" data-d="0" style="--dep:1.5;--dur:7.2s;--ph:0s">
+          <div class="cc__f">
+            <div class="card card--list">
+              <header><b>The Community</b><i aria-hidden="true">⋮</i></header>
+              <span class="card__rule"></span>
+              <ul class="faces">
+                <li><img src="https://images.pexels.com/photos/37042724/pexels-photo-37042724.jpeg?auto=compress&cs=tinysrgb&w=120" alt="@yomi_historian" loading="lazy" /><em class="dot dot--h" title="Historian"></em></li>
+                <li><img src="https://images.pexels.com/photos/18330807/pexels-photo-18330807.jpeg?auto=compress&cs=tinysrgb&w=120" alt="@ndidi_tales" loading="lazy" /><em class="dot dot--r" title="Raider"></em></li>
+                <li><img src="https://images.pexels.com/photos/33826140/pexels-photo-33826140.jpeg?auto=compress&cs=tinysrgb&w=120" alt="@kofi_shona_keeper" loading="lazy" /><em class="dot dot--h" title="Historian"></em></li>
+                <li><img src="https://images.pexels.com/photos/13033125/pexels-photo-13033125.jpeg?auto=compress&cs=tinysrgb&w=120" alt="@lekip_massaicraft" loading="lazy" /><em class="dot dot--r" title="Raider"></em></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="cc rv" data-d="90" style="--dep:2.4;--dur:8.6s;--ph:-2.1s">
+          <div class="cc__f">
+            <figure class="card card--shot">
+              <img src="https://images.pexels.com/photos/35273638/pexels-photo-35273638.jpeg?auto=compress&cs=tinysrgb&w=700" alt="A woman in vibrant traditional clothing and headscarf" loading="lazy" />
+              <figcaption class="shotchips">
+                <span>Reel</span><span>Images</span><span>Audio</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="cc rv" data-d="180" style="--dep:1.1;--dur:6.4s;--ph:-3.4s">
+          <div class="cc__f">
+            <div class="card card--metric">
+              <span class="metric__top">
+                <i class="metric__ico" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 1.6 9.9 5.5l4.3.6-3.1 3 .7 4.3L8 11.4l-3.8 2 .7-4.3-3.1-3 4.3-.6z"/></svg></i>
+                Raiders
+              </span>
+              <b>77.8k</b>
+              <small><i aria-hidden="true">↑</i> Following these four creators</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ccol ccol--drop">
+
+        <div class="cc rv" data-d="50" style="--dep:1.8;--dur:7.8s;--ph:-1.2s">
+          <div class="cc__f">
+            <div class="card card--stat">
+              <i class="stat__ico" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.5 13.5V9m4 4.5V4m4 9.5V6.5m4 7v-11"/></svg></i>
+              <span><b>276</b><small>Scrolls published so far</small></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cc rv" data-d="140" style="--dep:2.9;--dur:9.4s;--ph:-4.6s">
+          <div class="cc__f">
+            <div class="card card--profile">
+              <header>
+                <img src="https://images.pexels.com/photos/13033125/pexels-photo-13033125.jpeg?auto=compress&cs=tinysrgb&w=120" alt="" loading="lazy" />
+                <span><b>@lekip_massaicraft</b><small>Kajiado, Kenya</small></span>
+                <i aria-hidden="true">⋯</i>
+              </header>
+              <img class="profile__shot" src="https://images.pexels.com/photos/35034044/pexels-photo-35034044.jpeg?auto=compress&cs=tinysrgb&w=700" alt="Portrait of a Maasai tribe member in traditional attire" loading="lazy" />
+              <span class="badge badge--r profile__tag">Raider</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 07 · MANIFESTO ═══════════ -->
+<section class="man" id="manifesto">
+  <div class="wrap">
+    <header class="sec sec--c">
+      <span class="pill pill--dark rv">Our Manifesto</span>
+      <h2 class="h1 serif rv" data-d="70">Because Culture Is Not Static.</h2>
+      <p class="sub rv" data-d="130">Our history and ancestral ways deserve a living dynamic digital home — built on these 4 guiding principles.</p>
+    </header>
+
+    <div class="mgrid">
+      <article class="mc mc--a">
+        <div class="mc__card">
+          <span class="mc__pin" aria-hidden="true"></span>
+          <span class="mc__seal serif" aria-hidden="true">✦</span>
+          <div class="mc__tile">
+            <img class="mc__ph" src="https://images.pexels.com/photos/28530092/pexels-photo-28530092.jpeg?auto=compress&cs=tinysrgb&w=640" alt="Two drummers playing traditional talking drums in the street" loading="lazy" />
+            <b class="mc__num serif">01</b>
+            <span class="mc__tag">Voice</span>
+          </div>
+          <div class="mc__body">
+            <h3 class="serif">We Tell</h3>
+            <p>Culture is more than something to preserve in static museums. It is something to live, speak, celebrate, and actively share daily.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="mc mc--b">
+        <div class="mc__card">
+          <span class="mc__pin" aria-hidden="true"></span>
+          <span class="mc__seal serif" aria-hidden="true">❖</span>
+          <div class="mc__tile">
+            <img class="mc__ph" src="https://images.pexels.com/photos/34735506/pexels-photo-34735506.jpeg?auto=compress&cs=tinysrgb&w=640" alt="A cultural celebration parade, the crowd in full traditional regalia" loading="lazy" />
+            <b class="mc__num serif">02</b>
+            <span class="mc__tag">Kinship</span>
+          </div>
+          <div class="mc__body">
+            <h3 class="serif">We Share</h3>
+            <p>Stories gain power and thrive when they travel organically from person to person, family to family, and across entire communities.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="mc mc--c">
+        <div class="mc__card">
+          <span class="mc__pin" aria-hidden="true"></span>
+          <span class="mc__seal serif" aria-hidden="true">✶</span>
+          <div class="mc__tile">
+            <img class="mc__ph" src="https://images.pexels.com/photos/34734122/pexels-photo-34734122.jpeg?auto=compress&cs=tinysrgb&w=640" alt="A traditional ceremony in progress, elders and family gathered in red regalia" loading="lazy" />
+            <b class="mc__num serif">03</b>
+            <span class="mc__tag">Roots</span>
+          </div>
+          <div class="mc__body">
+            <h3 class="serif">We Connect</h3>
+            <p>Discover real cultural roots, ancestral lineages, and passionate diaspora communities dedicated to the heritage you hold dear.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="mc mc--d">
+        <div class="mc__card">
+          <span class="mc__pin" aria-hidden="true"></span>
+          <span class="mc__seal serif" aria-hidden="true">◈</span>
+          <div class="mc__tile">
+            <img class="mc__ph" src="https://images.pexels.com/photos/36106923/pexels-photo-36106923.jpeg?auto=compress&cs=tinysrgb&w=640" alt="An elder woman in a patterned wrapper, the keeper of her family&rsquo;s stories" loading="lazy" />
+            <b class="mc__num serif">04</b>
+            <span class="mc__tag">Legacy</span>
+          </div>
+          <div class="mc__body">
+            <h3 class="serif">We Remember</h3>
+            <p>By capturing stories in rich digital format today, we secure an unbroken heritage for generations to discover tomorrow.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 08 · HOW IT WORKS ═══════════ -->
+<section class="how" id="how">
+  <div class="wrap">
+    <header class="sec sec--c">
+      <span class="pill pill--dark rv">Simple Guide</span>
+      <h2 class="h1 serif rv" data-d="70">How It Works</h2>
+      <p class="sub rv" data-d="130">The bridge between centuries of ancient tradition and future generations is built in five effortless steps.</p>
+    </header>
+
+    <div class="hgrid">
+      <article class="hc rv" data-d="0"><b class="serif">01</b><h3 class="serif">Discover</h3><p>Browse a beautiful immersive map and video archive of cultural traditions and oral histories.</p></article>
+      <article class="hc rv" data-d="70"><b class="serif">02</b><h3 class="serif">Create</h3><p>Easily document stories, languages, and rituals using rich multimedia scroll formats.</p></article>
+      <article class="hc rv" data-d="140"><b class="serif">03</b><h3 class="serif">Share</h3><p>Publish and secure your family's personal memories directly on our cultural database.</p></article>
+      <article class="hc rv" data-d="210"><b class="serif">04</b><h3 class="serif">Raid</h3><p>Follow cultural raiders to see authentic traditional content verified by experts.</p></article>
+      <article class="hc rv" data-d="280"><b class="serif">05</b><h3 class="serif">Connect</h3><p>Find your global diaspora, chat with elders, and keep ancient languages alive together.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 09 · APP PREVIEW ═══════════ -->
+<section class="app" id="app">
+  <span class="app__shapes" aria-hidden="true"></span>
+
+  <div class="wrap app__intro">
+    <a class="app__join rv" href="#waitlist" data-scroll>
+      <span class="app__faces" aria-hidden="true">
+        <img src="https://images.pexels.com/photos/37042724/pexels-photo-37042724.jpeg?auto=compress&cs=tinysrgb&w=80" alt="" loading="lazy" />
+        <img src="https://images.pexels.com/photos/18330807/pexels-photo-18330807.jpeg?auto=compress&cs=tinysrgb&w=80" alt="" loading="lazy" />
+        <img src="https://images.pexels.com/photos/13033125/pexels-photo-13033125.jpeg?auto=compress&cs=tinysrgb&w=80" alt="" loading="lazy" />
+      </span>
+      <span class="app__joint">Join 3,000+ members</span>
+      <span class="app__jcta">Get Access <i aria-hidden="true">→</i></span>
+    </a>
+
+    <h2 class="app__h serif rv" data-d="70">CultureShare Is Coming to Your Phone.</h2>
+    <p class="app__sub rv" data-d="120">Capture traditional stories, stream oral history reels, and explore lineages — anytime, anywhere.</p>
+
+    <div class="app__store rv" data-d="170">
+      <a href="#waitlist" class="store store--gold mag" data-scroll>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.7c0-2.4 2-3.6 2.1-3.6-1.1-1.7-2.9-1.9-3.6-1.9-1.5-.2-3 .9-3.7.9s-2-.9-3.2-.9c-1.7 0-3.2 1-4 2.5-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8s1.9.8 3.2.8 2.1-1.2 2.9-2.3c.9-1.3 1.3-2.6 1.3-2.7 0 0-2.4-1-2.3-3.7ZM14.3 5.6c.7-.8 1.1-1.9 1-3-1 0-2.2.6-2.9 1.5-.6.7-1.2 1.9-1 3 1.1 0 2.2-.6 2.9-1.5Z" fill="currentColor"/></svg>
+        <span>App Store</span>
+      </a>
+      <a href="#waitlist" class="store store--ghost mag" data-scroll>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3.2v17.6c0 .5.5.9 1 .6l12.4-8.8c.4-.3.4-.9 0-1.2L5 2.6c-.5-.3-1 .1-1 .6Z" fill="currentColor"/></svg>
+        <span>Google Play</span>
+      </a>
+    </div>
+
+    <p class="app__soon rv" data-d="210"><span class="dot" aria-hidden="true"></span>Coming soon on iOS &amp; Android</p>
+  </div>
+
+  <div class="app__stage">
+    <div class="app__clip">
+
+    <div class="phones">
+      <div class="pho pho--l">
+        <span class="pho__island" aria-hidden="true"></span>
+        <span class="pho__glare" aria-hidden="true"></span>
+        <div class="pho__scr">
+          <img src="assets/img/app-discover.webp" alt="The CultureShare Discover screen, showing trending cultural topics and scrolls" loading="lazy" width="460" height="995" />
+        </div>
+      </div>
+
+      <div class="pho pho--c">
+        <span class="pho__island" aria-hidden="true"></span>
+        <span class="pho__glare" aria-hidden="true"></span>
+        <div class="pho__scr">
+          <img src="assets/img/app-home.webp" alt="The CultureShare home feed, showing stories shared by the community" loading="lazy" width="460" height="995" />
+        </div>
+      </div>
+
+      <div class="pho pho--r">
+        <span class="pho__island" aria-hidden="true"></span>
+        <span class="pho__glare" aria-hidden="true"></span>
+        <div class="pho__scr">
+          <img src="assets/img/app-scroll.webp" alt="A CultureShare scroll about Kente weaving, open to its full story" loading="lazy" width="460" height="995" />
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <span class="fcard fcard--a" style="--dur:7.4s;--ph:0s">
+      <svg class="fcard__spark" viewBox="0 0 110 38" aria-hidden="true">
+        <path d="M2 30 18 22 34 26 50 12 66 17 82 6 106 10" />
+        <circle cx="82" cy="6" r="3.2" />
+      </svg>
+      <b>2,841</b>
+      <small>Reactions this week</small>
+    </span>
+
+    <span class="fcard fcard--b" style="--dur:8.8s;--ph:-2.6s">
+      <small>Raiders following</small>
+      <b>34.1k</b>
+      <span class="fcard__faces" aria-hidden="true">
+        <img src="https://images.pexels.com/photos/37042724/pexels-photo-37042724.jpeg?auto=compress&cs=tinysrgb&w=80" alt="" loading="lazy" />
+        <img src="https://images.pexels.com/photos/18330807/pexels-photo-18330807.jpeg?auto=compress&cs=tinysrgb&w=80" alt="" loading="lazy" />
+        <img src="https://images.pexels.com/photos/13033125/pexels-photo-13033125.jpeg?auto=compress&cs=tinysrgb&w=80" alt="" loading="lazy" />
+        <i>+</i>
+      </span>
+    </span>
+
+    <span class="fcard fcard--c" style="--dur:6.8s;--ph:-4.2s">
+      <small>Most raided categories</small>
+      <ul class="fcard__bars">
+        <li><span>Textiles</span><i style="--v:88%"></i></li>
+        <li><span>Music</span><i style="--v:64%"></i></li>
+        <li><span>Food</span><i style="--v:47%"></i></li>
+      </ul>
+    </span>
+  </div>
+</section>
+
+<!-- ═══════════ 10 · CTA · JOIN THE WAITLIST ═══════════ -->
+<section class="cta" id="waitlist">
+  <div class="wrap">
+    <div class="cta__head">
+      <span class="cta__eyebrow rv">Join the Community</span>
+      <h2 class="h1 serif rv" data-d="60">Your Culture. Your Story. Your Way.</h2>
+      <p class="cta__lead rv" data-d="120">Be There When CultureShare Goes Live.</p>
+      <p class="cta__sub rv" data-d="170">We are building the premier digital home for African stories, heritage, and traditions. Join early to claim your custom handle, invite elders, and document your legacy.</p>
+    </div>
+
+    <form class="wlf rv" data-d="80" id="wlForm" novalidate>
+      <div class="wlf__row" id="wlRow">
+        <label class="sr" for="wlEmail">Your email address</label>
+        <input id="wlEmail" type="email" placeholder="Enter your email address…" autocomplete="email" />
+        <button type="submit" class="btn btn--dark mag">Join the Waitlist</button>
+      </div>
+      <p class="wlf__note" id="wlNote">We will only use your email for CultureShare launch updates.</p>
+    </form>
+  </div>
+
+  <!-- curved carousel: a marquee whose panels lean toward the centre -->
+  <div class="ring-stage rv" data-d="60" id="ringStage">
+    <div class="ring" id="ring">
+        <figure><img src="https://images.pexels.com/photos/34735506/pexels-photo-34735506.jpeg?auto=compress&cs=tinysrgb&w=760" alt="A cultural celebration parade in Kano, Nigeria" loading="lazy" /></figure>
+        <figure><img src="https://images.pexels.com/photos/39068198/pexels-photo-39068198.jpeg?auto=compress&cs=tinysrgb&w=760" alt="A woman in vivid festival regalia during a cultural celebration" loading="lazy" /></figure>
+        <figure><img src="https://images.pexels.com/photos/36773397/pexels-photo-36773397.jpeg?auto=compress&cs=tinysrgb&w=760" alt="A craftsman weaving Kente cloth on a traditional loom" loading="lazy" /></figure>
+        <figure><img src="https://images.pexels.com/photos/13033125/pexels-photo-13033125.jpeg?auto=compress&cs=tinysrgb&w=760" alt="Close-up of a Maasai warrior wearing traditional beadwork" loading="lazy" /></figure>
+        <figure><img src="https://images.pexels.com/photos/8655023/pexels-photo-8655023.jpeg?auto=compress&cs=tinysrgb&w=760" alt="Bolts of vividly patterned African fabric stacked at a market" loading="lazy" /></figure>
+        <figure><img src="https://images.pexels.com/photos/26689570/pexels-photo-26689570.jpeg?auto=compress&cs=tinysrgb&w=760" alt="Giraffes grazing near an acacia tree on the savanna at sunset" loading="lazy" /></figure>
+        <figure><img src="https://images.pexels.com/photos/30803489/pexels-photo-30803489.jpeg?auto=compress&cs=tinysrgb&w=760" alt="A dancer performing in vivid traditional attire" loading="lazy" /></figure>
+        <figure><img src="https://images.pexels.com/photos/5504504/pexels-photo-5504504.jpeg?auto=compress&cs=tinysrgb&w=760" alt="The clay architecture of Ait Benhaddou at golden hour" loading="lazy" /></figure>
+        <figure><img src="https://images.pexels.com/photos/35273638/pexels-photo-35273638.jpeg?auto=compress&cs=tinysrgb&w=760" alt="A woman wearing vibrant traditional clothing and headscarf" loading="lazy" /></figure>
+        <figure><img src="https://images.pexels.com/photos/28530092/pexels-photo-28530092.jpeg?auto=compress&cs=tinysrgb&w=760" alt="Street musicians playing traditional drums" loading="lazy" /></figure>
+        <figure aria-hidden="true"><img src="https://images.pexels.com/photos/34735506/pexels-photo-34735506.jpeg?auto=compress&cs=tinysrgb&w=760" alt="" loading="lazy" /></figure>
+        <figure aria-hidden="true"><img src="https://images.pexels.com/photos/39068198/pexels-photo-39068198.jpeg?auto=compress&cs=tinysrgb&w=760" alt="" loading="lazy" /></figure>
+        <figure aria-hidden="true"><img src="https://images.pexels.com/photos/36773397/pexels-photo-36773397.jpeg?auto=compress&cs=tinysrgb&w=760" alt="" loading="lazy" /></figure>
+        <figure aria-hidden="true"><img src="https://images.pexels.com/photos/13033125/pexels-photo-13033125.jpeg?auto=compress&cs=tinysrgb&w=760" alt="" loading="lazy" /></figure>
+        <figure aria-hidden="true"><img src="https://images.pexels.com/photos/8655023/pexels-photo-8655023.jpeg?auto=compress&cs=tinysrgb&w=760" alt="" loading="lazy" /></figure>
+        <figure aria-hidden="true"><img src="https://images.pexels.com/photos/26689570/pexels-photo-26689570.jpeg?auto=compress&cs=tinysrgb&w=760" alt="" loading="lazy" /></figure>
+        <figure aria-hidden="true"><img src="https://images.pexels.com/photos/30803489/pexels-photo-30803489.jpeg?auto=compress&cs=tinysrgb&w=760" alt="" loading="lazy" /></figure>
+        <figure aria-hidden="true"><img src="https://images.pexels.com/photos/5504504/pexels-photo-5504504.jpeg?auto=compress&cs=tinysrgb&w=760" alt="" loading="lazy" /></figure>
+        <figure aria-hidden="true"><img src="https://images.pexels.com/photos/35273638/pexels-photo-35273638.jpeg?auto=compress&cs=tinysrgb&w=760" alt="" loading="lazy" /></figure>
+        <figure aria-hidden="true"><img src="https://images.pexels.com/photos/28530092/pexels-photo-28530092.jpeg?auto=compress&cs=tinysrgb&w=760" alt="" loading="lazy" /></figure>
+    </div>
+  </div>
+
+</section>
+
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="foot" id="contact">
+  <div class="wrap foot__grid">
+
+    <div class="foot__brand">
+      <a class="logo logo--foot" href="#top" data-scroll>
+        <span class="logo__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 32"><path d="M12 1c4 4 6 8 6 12s-2 8-6 12c-4-4-6-8-6-12s2-8 6-12Z" /><path d="M2 15h20M4 9h16M4 21h16" /></svg>
+        </span>
+        <span class="logo__word serif">CultureShare</span>
+      </a>
+
+      <p class="foot__blurb">Documenting, preserving, and sharing African stories and heritage — in our own voices, on our own terms.</p>
+
+      <ul class="foot__social">
+        <li><a href="#" aria-label="CultureShare on Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none"/></svg>
+        </a></li>
+        <li><a href="#" aria-label="CultureShare on X">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20"/></svg>
+        </a></li>
+        <li><a href="#" aria-label="CultureShare on TikTok">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4v9.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 4c.4 2.3 2 3.9 4.5 4.1"/></svg>
+        </a></li>
+        <li><a href="#" aria-label="CultureShare on YouTube">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="4"/><path d="M10.5 9.6l4.5 2.4-4.5 2.4z" fill="currentColor" stroke="none"/></svg>
+        </a></li>
+      </ul>
+
+      <small class="foot__copy">© <span id="yr">2026</span> CultureShare — All Rights Reserved</small>
+    </div>
+
+    <nav class="foot__col" aria-label="Explore">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="#about" data-scroll>Our Mission</a></li>
+        <li><a href="#problem" data-scroll>Why It Matters</a></li>
+        <li><a href="#manifesto" data-scroll>The Manifesto</a></li>
+        <li><a href="#how" data-scroll>How It Works</a></li>
+        <li><a href="#people" data-scroll>Who It's For</a></li>
+        <li><a href="#app" data-scroll>Preview the App</a></li>
+      </ul>
+    </nav>
+
+    <nav class="foot__col" aria-label="Community">
+      <h4>Community</h4>
+      <ul>
+        <li><a href="#waitlist" data-scroll>Join the Waitlist</a></li>
+        <li><a href="#waitlist" data-scroll>Become a Raider</a></li>
+        <li><a href="#waitlist" data-scroll>Share a Story</a></li>
+        <li><a href="#waitlist" data-scroll>Cultural Partners</a></li>
+        <li><a href="#waitlist" data-scroll>For Elders</a></li>
+      </ul>
+    </nav>
+
+    <nav class="foot__col" aria-label="Resources">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="#waitlist" data-scroll>Press Kit</a></li>
+        <li><a href="#waitlist" data-scroll>Careers</a></li>
+        <li><a href="#contact" data-scroll>Contact Us</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Use</a></li>
+      </ul>
+    </nav>
+
+  </div>
+
+  <span class="foot__word serif" aria-hidden="true">CultureShare</span>
+</footer>
+
+<!-- ═══════════ SUCCESS MODAL ═══════════ -->
+<div class="ok" id="ok" role="dialog" aria-modal="true" aria-labelledby="okTitle" aria-hidden="true">
+  <div class="ok__card">
+    <button class="ok__x" id="okX" aria-label="Close"><svg viewBox="0 0 16 16"><path d="m4 4 8 8M12 4l-8 8"/></svg></button>
+    <span class="ok__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 12.5 5 5L20 6.5"/></svg></span>
+    <h3 class="serif" id="okTitle">You're In.</h3>
+    <p>You're officially on the CultureShare waitlist.<br />We'll let you know when CultureShare is ready for you.</p>
+    <div class="ok__btns">
+      <a href="#contact" class="btn btn--gold mag" data-scroll>Follow Our Journey</a>
+      <button class="btn btn--ghost mag" id="okBack">Back to CultureShare</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js?v=2"></script>
+</body>
+</html>

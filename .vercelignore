@@ -1,0 +1,6 @@
+# Design source — kept in the repo, never served from the public site
+*.pdf
+Fonts/
+serve.py
+assets/img/PreferencesScreen*.png
+assets/img/Onboarding/

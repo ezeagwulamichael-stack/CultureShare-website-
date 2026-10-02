@@ -1,0 +1,187 @@
+/* ══════════════════════════════════════════════════════════════
+   CultureShare web — design tokens
+   Source: mobile Figma (JH3ovcD0Y0h9DGtsZBmBIE) + brand rationale.
+   Brand foundation: Dark Green #1B4332 · Gold #C9A84C.
+   Dark is the default (matches mobile); light is the user toggle.
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* brand — fixed in both themes */
+  --brand-green: #1b4332;
+  --brand-emerald: #0c3122;
+  --brand-gold: #c9a84c;
+  --brand-gold-100: #f3dda3;
+  --brand-gold-200: #dec279;
+
+  /* type */
+  --font-display: 'Bricolage Grotesque', 'Urbanist', system-ui, sans-serif;
+  --font-ui: 'Urbanist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --fs-display: clamp(2.2rem, 3.4vw, 3rem);
+  --fs-h1: clamp(1.75rem, 2.4vw, 2.1rem);
+  --fs-h2: 1.5rem;
+  --fs-h3: 1.2rem;
+  --fs-body: 0.9375rem;
+  --fs-sm: 0.875rem;
+  --fs-xs: 0.75rem;
+  --fs-2xs: 0.6875rem;
+
+  /* radius (Figma: inputs 8, cards 14–16, buttons 14, pills 20) */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+  --r-pill: 999px;
+
+  /* space */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+
+  /* layout */
+  --sidebar-w: 240px;
+  --sidebar-w-compact: 220px;
+  --rail-w: 320px;
+  --topbar-h: 68px;
+  --content-max: 760px;
+
+  /* motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast: 140ms;
+  --t-med: 240ms;
+  --t-slow: 420ms;
+
+  --z-topbar: 40;
+  --z-nav: 45;
+  --z-drawer: 60;
+  --z-modal: 70;
+  --z-toast: 90;
+}
+
+/* ─── Dark (default, mirrors the mobile app) ─── */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #070e09;
+  --bg-glow: radial-gradient(120% 70% at 30% -10%, rgba(27, 67, 50, 0.95) 0%, rgba(19, 45, 25, 0.8) 26%, rgba(14, 33, 13, 0.55) 39%, rgba(10, 22, 0, 0.25) 52%, rgba(6, 12, 7, 0) 100%);
+  --bg-gold-glow: radial-gradient(40% 35% at 20% 0%, rgba(201, 168, 76, 0.07), transparent 70%);
+
+  --surface: #0f1d15;
+  --surface-1: #112118;
+  --surface-2: #172c1f;
+  --surface-3: #1e3527;
+  --surface-glass: rgba(255, 255, 255, 0.06);
+  --surface-raised: #13241a;
+  --card-grad: linear-gradient(178deg, #172c1f -8%, #0e1410 100%);
+  --overlay: rgba(4, 9, 6, 0.72);
+
+  --text: #f4efe6;
+  --text-2: rgba(255, 255, 255, 0.7);
+  --text-3: #9caaa2;
+  --text-4: #607068;
+  --text-dim: #676d75;
+
+  --line: rgba(255, 255, 255, 0.07);
+  --line-2: rgba(255, 255, 255, 0.14);
+  --line-input: rgba(255, 255, 255, 0.2);
+  --input-bg: rgba(246, 246, 246, 0.04);
+
+  --accent: #c9a84c;
+  --accent-text: #e2c87e;
+  --accent-soft: rgba(201, 168, 76, 0.12);
+  --accent-line: rgba(201, 168, 76, 0.35);
+  --accent-strong: #f3dda3;
+
+  --btn-primary-bg: #f3dda3;
+  --btn-primary-bg-hover: #f7e6b8;
+  --btn-primary-fg: #0a1800;
+  --btn-secondary-border: rgba(255, 255, 255, 0.28);
+
+  --success: #4ade80;
+  --success-soft: rgba(74, 222, 128, 0.12);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.12);
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.12);
+  --info: #7dd3fc;
+  --info-soft: rgba(125, 211, 252, 0.12);
+  --heart: #ef4444;
+
+  --darkzone: #000000;
+  --darkzone-line: rgba(255, 255, 255, 0.55);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
+
+  --skeleton: rgba(255, 255, 255, 0.05);
+  --skeleton-hi: rgba(255, 255, 255, 0.1);
+}
+
+/* ─── Light (cream, deep-green ink, restrained gold) ─── */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f6f1e6;
+  --bg-glow: radial-gradient(110% 60% at 30% -10%, rgba(27, 67, 50, 0.1) 0%, rgba(27, 67, 50, 0.04) 40%, rgba(246, 241, 230, 0) 75%);
+  --bg-gold-glow: radial-gradient(40% 35% at 20% 0%, rgba(201, 168, 76, 0.12), transparent 70%);
+
+  --surface: #fbf8f1;
+  --surface-1: #fffdf8;
+  --surface-2: #f1ebdc;
+  --surface-3: #e7dfcb;
+  --surface-glass: rgba(255, 253, 248, 0.78);
+  --surface-raised: #fffdf8;
+  --card-grad: linear-gradient(180deg, #fffdf8 0%, #f8f3e7 100%);
+  --overlay: rgba(12, 36, 24, 0.45);
+
+  --text: #0c2418;
+  --text-2: rgba(12, 36, 24, 0.74);
+  --text-3: #4f6157;
+  --text-4: #6f7f76;
+  --text-dim: #7c867f;
+
+  --line: rgba(27, 67, 50, 0.1);
+  --line-2: rgba(27, 67, 50, 0.18);
+  --line-input: rgba(27, 67, 50, 0.24);
+  --input-bg: #fffdf8;
+
+  --accent: #c9a84c;
+  --accent-text: #85661a;
+  --accent-soft: rgba(201, 168, 76, 0.16);
+  --accent-line: rgba(156, 122, 31, 0.45);
+  --accent-strong: #6f5412;
+
+  --btn-primary-bg: #1b4332;
+  --btn-primary-bg-hover: #235540;
+  --btn-primary-fg: #f8f3e7;
+  --btn-secondary-border: rgba(27, 67, 50, 0.3);
+
+  --success: #15803d;
+  --success-soft: rgba(21, 128, 61, 0.1);
+  --danger: #b91c1c;
+  --danger-soft: rgba(185, 28, 28, 0.08);
+  --warning: #a16207;
+  --warning-soft: rgba(161, 98, 7, 0.1);
+  --info: #0369a1;
+  --info-soft: rgba(3, 105, 161, 0.08);
+  --heart: #dc2626;
+
+  --darkzone: #10140f;
+  --darkzone-line: rgba(16, 20, 15, 0.7);
+
+  --shadow-sm: 0 2px 8px rgba(27, 67, 50, 0.08);
+  --shadow-md: 0 10px 30px rgba(27, 67, 50, 0.12);
+  --shadow-lg: 0 24px 60px rgba(27, 67, 50, 0.18);
+
+  --skeleton: rgba(27, 67, 50, 0.06);
+  --skeleton-hi: rgba(27, 67, 50, 0.11);
+}

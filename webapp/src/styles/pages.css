@@ -1804,3 +1804,18 @@ a.meta-cell:hover {
     padding-top: 24px;
   }
 }
+
+/* Right-hand panel content shares the logo's left edge (welcome + sign in) */
+@media (min-width: 768px) {
+  .welcome-panel {
+    --panel-x: clamp(32px, 5vw, 72px);
+    align-items: flex-start;
+    padding-inline: var(--panel-x);
+  }
+  .welcome-panel .wp-logo {
+    left: var(--panel-x);
+  }
+  .welcome-panel .orbit-wrap {
+    margin: 0;
+  }
+}

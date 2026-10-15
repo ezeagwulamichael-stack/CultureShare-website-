@@ -4,12 +4,12 @@ import { motion, AnimatePresence } from 'motion/react'
 import { ArrowLeft, ArrowRight2, Camera, InfoCircle, SearchNormal1, TickCircle, Profile2User, Crown1, Global, Sun1, Moon, Check as Tick } from 'iconsax-react'
 import { useApp } from '../store/useApp'
 import { CULTURES, CUISINES, FEATURED_ARTISTS, FOOD_STORIES, GENRES, INTERESTS, REGIONS, USERS, COUNTRIES, img, asset } from '../data/seed'
-import { Avatar, Input, Logo, RaidButton, Select, Textarea, Modal } from '../components/ui'
+import { Avatar, FollowButton, Input, Logo, Select, Textarea, Modal } from '../components/ui'
 import { cx, getUser } from '../lib/util'
 
 const STEPS = ['profile', 'interests', 'cultures', 'music', 'food', 'people', 'discovering', 'recommended'] as const
 type Step = (typeof STEPS)[number]
-const LABELS: Record<Step, string> = { profile: 'Your profile', interests: 'Interests', cultures: 'Cultures', music: 'Music', food: 'Food', people: 'Find your people', discovering: 'Personalising', recommended: 'People to Raid' }
+const LABELS: Record<Step, string> = { profile: 'Your profile', interests: 'Interests', cultures: 'Cultures', music: 'Music', food: 'Food', people: 'Find your people', discovering: 'Personalising', recommended: 'People to follow' }
 const PROGRESS: Step[] = ['profile', 'interests', 'cultures', 'music', 'food']
 
 function toggle(list: string[], v: string, max?: number) {
@@ -275,7 +275,7 @@ export function Onboarding() {
                 </div>
                 <div className="stack gap-1">
                   <span className="eyebrow">Featured artists</span>
-                  <span className="xs faint">Raid artists to get personalised Scroll recommendations.</span>
+                  <span className="xs faint">Follow the artists you love to keep up with their posts on your Home.</span>
                 </div>
                 <div className="ob-grid-3">
                   {FEATURED_ARTISTS.map((id) => {
@@ -285,7 +285,7 @@ export function Onboarding() {
                         <Avatar user={u} size={56} />
                         <span className="small strong">{u.name}</span>
                         <span className="xs faint">{u.country}</span>
-                        <RaidButton userId={id} size="sm" />
+                        <FollowButton userId={id} size="sm" />
                       </div>
                     )
                   })}
@@ -429,7 +429,7 @@ function ContactsNote() {
       </button>
       <Modal open={open} onClose={() => setOpen(false)} title="Your contacts">
         <p className="small muted" style={{ lineHeight: 1.6 }}>
-          When you sync contacts, we match phone numbers and emails against existing CultureShare accounts so you can Raid people you already know. We don’t message your contacts.
+          When you sync contacts, we match phone numbers and emails against existing CultureShare accounts so you can follow people you already know. We don’t message your contacts.
         </p>
         <div className="mt-4">
           <div className="decision">
@@ -474,7 +474,7 @@ function Discovering() {
 /* Screen 06 — Discover people */
 function Recommended() {
   const prefs = useApp((s) => s.prefs)
-  const raiding = useApp((s) => s.raiding)
+  const following = useApp((s) => s.following)
   const people = USERS.filter((u) => u.role !== 'artist')
   const recommended = people.filter((u) => u.role === 'historian' || u.verified).slice(0, 6)
   const byInterest = useMemo(() => {
@@ -484,10 +484,10 @@ function Recommended() {
   }, [prefs.cultures, people, recommended])
   return (
     <div className="stack gap-6">
-      <Head title="People to Raid" sub="Raid a creator to get their Scrolls first-hand. You can unraid anytime." />
+      <Head title="People to follow" sub="Follow storytellers, Historians, artists and friends to keep up with their posts. You can unfollow anytime." />
       <div className="row between">
         <span className="eyebrow gold">Recommended for you</span>
-        <span className="xs faint">Raiding {raiding.length}</span>
+        <span className="xs faint">Following {following.length}</span>
       </div>
       <div className="ob-grid-3">
         {recommended.map((u, k) => (
@@ -499,6 +499,13 @@ function Recommended() {
         {byInterest.slice(0, 6).map((u, k) => (
           <PersonCard key={u.id} id={u.id} k={k} />
         ))}
+      </div>
+      <div className="decision" style={{ borderColor: 'var(--accent-line)' }}>
+        <InfoCircle size={16} style={{ flex: 'none', color: 'var(--accent-text)' }} />
+        <div>
+          <strong>Following vs Raiding</strong>
+          Follow is for keeping up with people day to day. Raid is separate: you raid a creator on purpose when you want their Scrolls first-hand — you’ll find it in the Scrolls section.
+        </div>
       </div>
     </div>
   )
@@ -516,7 +523,7 @@ function PersonCard({ id, k }: { id: string; k: number }) {
         {u.flag} {u.tribe} · {u.country}
       </span>
       {u.role === 'historian' && <span className="historian-badge">Historian</span>}
-      <RaidButton userId={u.id} />
+      <FollowButton userId={u.id} />
     </motion.div>
   )
 }

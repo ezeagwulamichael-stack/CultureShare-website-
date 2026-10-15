@@ -242,6 +242,7 @@ function NotificationsSection() {
   const set = useApp((s) => s.setNotifPref)
   const items = [
     ['scrolls', 'Scroll notifications', 'First-hand alerts when people you raid upload a Scroll'],
+    ['followers', 'New followers', 'When someone starts following you'],
     ['raiders', 'Raider activity', 'New Raiders and Raider milestones'],
     ['comments', 'Comments & replies', 'On your Scrolls, posts and comments'],
     ['messages', 'Messages', 'New direct and community messages'],

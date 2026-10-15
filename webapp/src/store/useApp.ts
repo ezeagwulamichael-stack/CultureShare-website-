@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { Comment, Community, Conversation, Notification, Post, Scroll, Status, Visibility } from '../data/types'
+import type { EmojiConfig } from '../lib/emoji'
 import { COMMENTS, COMMUNITIES, CONVERSATIONS, NOTIFICATIONS, POSTS, SCROLLS, STATUSES } from '../data/seed'
 
 /*
@@ -113,9 +114,15 @@ interface AppState {
   auth: AuthStage
   me: Me
   prefs: { interests: string[]; cultures: string[]; genres: string[]; cuisines: string[]; foodStories: string[] }
+  /** Everyday social graph — Follow to keep up with someone's posts. */
+  following: string[]
+  followers: string[]
+  /** Raid is the occasional, deliberate action of targeting a creator to get their Scrolls. */
   raiding: string[]
   raiders: string[]
   mutedRaid: string[]
+  /** The user's designed emoji — null until they make one in the Emoji studio. */
+  emoji: EmojiConfig | null
   likes: Record<string, boolean>
   museum: Record<string, string> // scrollId -> collection
   collections: string[]
@@ -159,6 +166,8 @@ interface AppState {
   setPrefs: (patch: Partial<AppState['prefs']>) => void
 
   // social graph
+  toggleFollow: (userId: string) => void
+  removeFollower: (userId: string) => void
   toggleRaid: (userId: string) => void
   toggleMuteRaid: (userId: string) => void
   removeRaider: (userId: string) => void
@@ -191,6 +200,7 @@ interface AppState {
 
   // messages
   sendMessage: (convId: string, text: string, attachment?: Conversation['messages'][number]['attachment'], scrollId?: string) => void
+  logCall: (convId: string, call: NonNullable<Conversation['messages'][number]['call']>) => void
   startConversation: (userId: string) => string
   shareToConversation: (userId: string, scrollId: string, text?: string) => void
   pinReel: (convId: string, scrollId: string | undefined) => void
@@ -206,6 +216,7 @@ interface AppState {
   setPlan: (p: PlanId) => void
   setTune: (patch: Partial<ProfileTune>) => void
   setAvatar: (patch: Partial<AvatarConfig>) => void
+  setEmoji: (e: EmojiConfig) => void
   setNotifPref: (k: string, v: boolean) => void
   setPrivacy: (patch: Partial<AppState['privacy']>) => void
 
@@ -223,6 +234,8 @@ const initialData = () => ({
   auth: 'guest' as AuthStage,
   me: DEFAULT_ME,
   prefs: { interests: [], cultures: [], genres: [], cuisines: [], foodStories: [] },
+  following: ['amaradia', 'kofi', 'adaeze', 'kwame', 'sade', 'kamau'],
+  followers: ['kwame', 'nana', 'sade', 'yuki', 'zola', 'tunde', 'imane', 'kamau'],
   raiding: ['amaradia', 'kofi', 'adaeze'],
   raiders: ['kwame', 'nana', 'sade', 'yuki', 'zola'],
   mutedRaid: [],
@@ -243,6 +256,7 @@ const initialData = () => ({
   plan: 'standard' as PlanId,
   tune: { sound: 'Talking Drum — Dùndún call', enabled: true, volume: 60 },
   avatar: { country: 'Nigeria', tribe: 'Igbo', gender: 'Female' as const, skin: '#8d5524', hat: 'Gele', clothes: 'Isiagu', jewelry: 'Coral beads', footwear: 'Leather sandals', color: '#c9a84c' },
+  emoji: null as EmojiConfig | null,
   family: [
     { id: 'f1', name: 'Obinna Eze', relation: 'Parent' as const, bio: 'Biological' as const, position: 'Father' },
     { id: 'f2', name: 'Ngozi Eze', relation: 'Parent' as const, bio: 'Biological' as const, position: 'Mother' },
@@ -254,7 +268,7 @@ const initialData = () => ({
     { id: 't3', label: 'Withdrawal to bank', amount: -1500, at: Date.now() - 4 * 3600_000, state: 'pending' as const },
   ] },
   location: { audience: 'nobody' as const, sharing: false },
-  notifPrefs: { scrolls: true, raiders: true, messages: true, communities: true, comments: true, email: false },
+  notifPrefs: { scrolls: true, followers: true, raiders: true, messages: true, communities: true, comments: true, email: false },
   privacy: { defaultScroll: 'public' as Visibility, defaultPost: 'public' as const, showRoots: true, messageFrom: 'raiders' as const },
 })
 
@@ -304,6 +318,11 @@ export const useApp = create<AppState>()(
       updateMe: (patch) => set((s) => ({ me: { ...s.me, ...patch } })),
       setPrefs: (patch) => set((s) => ({ prefs: { ...s.prefs, ...patch } })),
 
+      toggleFollow: (userId) => {
+        const on = get().following.includes(userId)
+        set((s) => ({ following: on ? s.following.filter((x) => x !== userId) : [...s.following, userId] }))
+      },
+      removeFollower: (userId) => set((s) => ({ followers: s.followers.filter((x) => x !== userId) })),
       toggleRaid: (userId) => {
         const on = get().raiding.includes(userId)
         set((s) => ({ raiding: on ? s.raiding.filter((x) => x !== userId) : [...s.raiding, userId] }))
@@ -465,6 +484,10 @@ export const useApp = create<AppState>()(
         set((s) => ({
           conversations: s.conversations.map((c) => (c.id === convId ? { ...c, messages: [...c.messages, { id: uid('m'), from: 'me', text, at: Date.now(), attachment, scrollId }] } : c)),
         })),
+      logCall: (convId, call) =>
+        set((s) => ({
+          conversations: s.conversations.map((c) => (c.id === convId ? { ...c, messages: [...c.messages, { id: uid('m'), from: 'me', text: '', at: Date.now(), call }] } : c)),
+        })),
       startConversation: (userId) => {
         const existing = get().conversations.find((c) => c.participantId === userId)
         if (existing) return existing.id
@@ -491,6 +514,7 @@ export const useApp = create<AppState>()(
       setPlan: (p) => set({ plan: p }),
       setTune: (patch) => set((s) => ({ tune: { ...s.tune, ...patch } })),
       setAvatar: (patch) => set((s) => ({ avatar: { ...s.avatar, ...patch } })),
+      setEmoji: (emoji) => set({ emoji }),
       setNotifPref: (k, v) => set((s) => ({ notifPrefs: { ...s.notifPrefs, [k]: v } })),
       setPrivacy: (patch) => set((s) => ({ privacy: { ...s.privacy, ...patch } })),
 
@@ -524,11 +548,24 @@ export const useApp = create<AppState>()(
     }),
     {
       name: 'cs-web',
-      version: 2,
+      version: 3,
       // v2: sample statuses gained more items (hexagon dash counts) — refresh them, keep the user's own.
+      // v3: Follow split out from Raid; Home became posts-only (more sample posts); emoji maker.
       migrate: (persisted, version) => {
-        const st = persisted as Partial<AppState>
-        if (version < 2) return { ...st, statuses: [...(st.statuses ?? []).filter((x) => x.userId === 'me'), ...STATUSES] } as AppState
+        let st = persisted as Partial<AppState>
+        if (version < 2) st = { ...st, statuses: [...(st.statuses ?? []).filter((x) => x.userId === 'me'), ...STATUSES] }
+        if (version < 3) {
+          const seed = initialData()
+          const posts = st.posts ?? []
+          st = {
+            ...st,
+            following: [...new Set([...(st.raiding ?? []), ...seed.following])],
+            followers: [...new Set([...(st.raiders ?? []), ...seed.followers])],
+            posts: [...posts, ...seed.posts.filter((p) => !posts.some((x) => x.id === p.id))],
+            notifications: [...(st.notifications ?? []), ...seed.notifications.filter((n) => n.type === 'follower')],
+            emoji: null,
+          }
+        }
         return st as AppState
       },
       storage: createJSONStorage(() => {

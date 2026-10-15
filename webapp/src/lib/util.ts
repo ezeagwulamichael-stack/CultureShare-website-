@@ -35,9 +35,11 @@ export const ROGUE: User = {
   verified: false,
   raiders: 0,
   raiding: 0,
+  followers: 0,
+  following: 0,
 }
 
-export function meAsUser(me: Me, raiders: number, raiding: number): User {
+export function meAsUser(me: Me, raiders: number, raiding: number, followers: number, following: number): User {
   return {
     id: 'me',
     name: `${me.firstName} ${me.lastName}`.trim(),
@@ -53,6 +55,8 @@ export function meAsUser(me: Me, raiders: number, raiding: number): User {
     verified: false,
     raiders,
     raiding,
+    followers,
+    following,
     website: me.website,
     cover: me.cover,
   }
@@ -70,13 +74,21 @@ export function useUser(id: string | undefined): User | undefined {
   const me = useApp((s) => s.me)
   const raiders = useApp((s) => s.raiders.length)
   const raiding = useApp((s) => s.raiding.length)
-  const raidingMe = useApp((s) => (id ? s.raiding.includes(id) : false))
+  const followers = useApp((s) => s.followers.length)
+  const following = useApp((s) => s.following.length)
+  const iRaid = useApp((s) => (id ? s.raiding.includes(id) : false))
+  const iFollow = useApp((s) => (id ? s.following.includes(id) : false))
   if (!id) return undefined
-  if (id === 'me') return meAsUser(me, raiders, raiding)
+  if (id === 'me') return meAsUser(me, raiders, raiding, followers, following)
   const u = getUser(id)
   if (!u) return undefined
-  // reflect my own raid in their count
-  return raidingMe ? { ...u, raiders: u.raiders + 1 } : u
+  // reflect my own follow / raid in their counts
+  return iRaid || iFollow ? { ...u, raiders: u.raiders + Number(iRaid), followers: u.followers + Number(iFollow) } : u
+}
+
+/** Raid is for Scrolls, so only accounts that upload them can be raided. */
+export function canRaid(u: User | undefined): boolean {
+  return !!u && u.id !== 'me' && u.id !== 'rogue' && (u.role === 'creator' || u.role === 'historian')
 }
 
 export function initials(name: string) {

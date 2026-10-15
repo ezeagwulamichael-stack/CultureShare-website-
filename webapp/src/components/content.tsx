@@ -7,7 +7,7 @@ import type { Post, Scroll } from '../data/types'
 import { useApp } from '../store/useApp'
 import { useUI } from '../store/useUI'
 import { compact, copyText, cx, timeAgo, useUser } from '../lib/util'
-import { AudioBlock, Avatar, NameLine, RaidButton } from './ui'
+import { AudioBlock, Avatar, FollowButton, NameLine, RaidButton } from './ui'
 
 /* ─────────── Popover menu ─────────── */
 export function Menu({ items, label = 'More options', icon }: { items: { label: string; icon?: ReactNode; onClick: () => void; danger?: boolean }[]; label?: string; icon?: ReactNode }) {
@@ -74,6 +74,8 @@ export function EngageBar({ id, likes, comments, saves, kind = 'scroll', darkZon
   const toast = useApp((s) => s.toast)
   const toggleRaid = useApp((s) => s.toggleRaid)
   const raiding = useApp((s) => (creatorId ? s.raiding.includes(creatorId) : false))
+  const toggleFollow = useApp((s) => s.toggleFollow)
+  const following = useApp((s) => (creatorId ? s.following.includes(creatorId) : false))
   const { openShare, openSave, openComments, openReport } = useUI()
   const nav = useNavigate()
   const [pop, setPop] = useState(0)
@@ -124,8 +126,12 @@ export function EngageBar({ id, likes, comments, saves, kind = 'scroll', darkZon
       <Menu
         items={[
           ...(kind === 'scroll' ? [{ label: 'Open Scroll', icon: <ArrowRight2 size={16} />, onClick: () => nav(`/scroll/${id}`) }] : []),
-          ...(creatorId && creatorId !== 'me' && creatorId !== 'rogue'
-            ? [{ label: raiding ? 'Unraid creator' : 'Raid creator', icon: <UserAdd size={16} />, onClick: () => { toggleRaid(creatorId); toast(raiding ? 'Stopped raiding' : 'You are now raiding this creator', 'success') } }]
+          // posts: Follow the author · Scrolls: Raid the creator for their Scrolls
+          ...(creatorId && creatorId !== 'me' && creatorId !== 'rogue' && kind === 'post'
+            ? [{ label: following ? 'Unfollow' : 'Follow', icon: <UserAdd size={16} />, onClick: () => { toggleFollow(creatorId); toast(following ? 'Unfollowed' : 'Following — their posts will show on your Home', 'success') } }]
+            : []),
+          ...(creatorId && creatorId !== 'me' && creatorId !== 'rogue' && kind === 'scroll'
+            ? [{ label: raiding ? 'Unraid creator' : 'Raid creator', icon: <UserAdd size={16} />, onClick: () => { toggleRaid(creatorId); toast(raiding ? 'Stopped raiding' : 'Raiding — their Scrolls come to you first-hand', 'success') } }]
             : []),
           { label: 'Copy link', icon: <Copy size={16} />, onClick: async () => { const u = `${location.origin}/${kind === 'scroll' ? 'scroll' : 'post'}/${id}`; toast((await copyText(u)) ? 'Link copied' : `Copy this link: ${u}`, 'success') } },
           { label: 'Report', icon: <Flag size={16} />, danger: true, onClick: () => openReport(id) },
@@ -457,6 +463,7 @@ export function PostCard({ post, index = 0 }: { post: Post; index?: number }) {
             {post.location && ` · 📍 ${post.location}`}
           </span>
         </div>
+        {author.id !== 'me' && <FollowButton userId={author.id} size="sm" />}
         <span className="tag">Post</span>
       </header>
       <div style={{ padding: '0 16px 12px' }}>

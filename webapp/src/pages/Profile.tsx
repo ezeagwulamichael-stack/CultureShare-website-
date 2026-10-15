@@ -1,20 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, NavLink, useNavigate, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
-import { Archive, Camera, Edit2, Global, Lock1, Message, Music, Notification, NotificationBing, Pause, Play, SearchNormal1, Share, UserRemove, Flag, Profile as ProfileIcon, Tree, Crown1, Setting2, Brush2, VolumeHigh, ShieldTick } from 'iconsax-react'
+import { Archive, Camera, Edit2, Global, Lock1, Message, Music, Notification, NotificationBing, Pause, Play, SearchNormal1, Share, UserRemove, Flag, Profile as ProfileIcon, Tree, Crown1, Setting2, Brush2, VolumeHigh, ShieldTick, EmojiHappy } from 'iconsax-react'
 import { useApp } from '../store/useApp'
 import { useUI } from '../store/useUI'
 import { COUNTRIES, USERS, asset } from '../data/seed'
 import { Page, PageHeader } from '../components/Shell'
 import { PostCard, ScrollTeaser, Menu } from '../components/content'
-import { Avatar, Callout, Decision, Empty, HistorianBadge, Input, RaidButton, Select, Spinner, Switch, Tabs, Textarea, VerifiedMark, LaterBadge } from '../components/ui'
-import { compact, cx, getUser, useUser, wait } from '../lib/util'
+import { Avatar, Callout, Decision, Empty, FollowButton, HistorianBadge, Input, RaidButton, Select, Spinner, Switch, Tabs, Textarea, VerifiedMark, LaterBadge } from '../components/ui'
+import { canRaid, compact, cx, getUser, useUser, wait } from '../lib/util'
+import { Emoji } from '../components/Emoji'
 import { TUNES, playTune, stopTune } from '../lib/tune'
 import { imageToDataUrl } from '../lib/media'
 
 const OTHER_TUNES: Record<string, string> = { amaradia: 'Highlife guitar riff', kofi: 'Talking Drum — Dùndún call', tariro: 'Mbira lullaby', 'amara-okafor': 'Kora morning' }
 const PUBLIC_MUSEUM = ['kofi', 'amaradia', 'tariro']
-const TABS = ['Posts', 'Scrolls', 'Museum', 'Raiders', 'Raiding'] as const
+const TABS = ['Posts', 'Scrolls', 'Museum', 'Followers', 'Following', 'Raiders', 'Raiding'] as const
 type PTab = (typeof TABS)[number]
 
 /* ─────────── Screens 16 / 19 / 20 / 21 / 32 — Profile ─────────── */
@@ -31,6 +32,7 @@ export function Profile() {
   const openReport = useUI((s) => s.openReport)
   const verification = useApp((s) => s.verification.state)
   const me = useApp((s) => s.me)
+  const emoji = useApp((s) => s.emoji)
   const nav = useNavigate()
   const tabParam = (params.tab ?? 'posts').toLowerCase()
   const tab = (TABS.find((t) => t.toLowerCase() === tabParam) ?? 'Posts') as PTab
@@ -76,13 +78,22 @@ export function Profile() {
                   <button className="btn btn-secondary btn-sm" onClick={() => openShare('me', 'profile')}>
                     <Share size={16} /> Share profile
                   </button>
+                  <Link to="/profile/emoji" className="btn btn-secondary btn-sm">
+                    {emoji ? <Emoji config={emoji} size={20} /> : <Brush2 size={16} />} {emoji ? 'Edit emoji' : 'Create your emoji'}
+                  </Link>
                   <Link to="/settings" className="icon-btn filled" aria-label="Settings">
                     <Setting2 size={18} />
                   </Link>
                 </>
               ) : (
                 <>
-                  <RaidButton userId={uid} solid />
+                  <FollowButton userId={uid} />
+                  {canRaid(user) && (
+                    <span className="has-tip" style={{ position: 'relative', display: 'inline-flex' }}>
+                      <RaidButton userId={uid} />
+                      <span className="tooltip">Raid to get their Scrolls first-hand</span>
+                    </span>
+                  )}
                   <button className="btn btn-secondary btn-sm" onClick={() => nav(`/messages/${startConv(uid)}`)}>
                     <Message size={16} /> Message
                   </button>
@@ -133,10 +144,20 @@ export function Profile() {
               <strong>{compact(myScrolls.length)}</strong>
               <span>Scrolls</span>
             </button>
-            <button className="stat-btn" onClick={() => setTab('Raiders')}>
-              <strong>{compact(user.raiders)}</strong>
-              <span>Raiders</span>
+            <button className="stat-btn" onClick={() => setTab('Followers')}>
+              <strong>{compact(user.followers)}</strong>
+              <span>Followers</span>
             </button>
+            <button className="stat-btn" onClick={() => setTab('Following')}>
+              <strong>{compact(user.following)}</strong>
+              <span>Following</span>
+            </button>
+            {(isMe || canRaid(user)) && (
+              <button className="stat-btn" onClick={() => setTab('Raiders')}>
+                <strong>{compact(user.raiders)}</strong>
+                <span>Raiders</span>
+              </button>
+            )}
             <button className="stat-btn" onClick={() => setTab('Raiding')}>
               <strong>{compact(user.raiding)}</strong>
               <span>Raiding</span>
@@ -176,6 +197,8 @@ export function Profile() {
               <Empty icon={<img src={asset('scroll-icon.webp')} alt="" width={34} />} title={isMe ? 'Create your first Scroll' : 'No Scrolls yet'} text={isMe ? 'Scrolls preserve culture: video, images, voice and written stories, validated by a Historian.' : `${user.name.split(' ')[0]} hasn’t published a Scroll yet.`} action={isMe ? <Link className="btn btn-primary btn-sm" to="/create/scroll">Create Scroll</Link> : undefined} />
             ))}
           {tab === 'Museum' && (isMe || PUBLIC_MUSEUM.includes(uid) ? <Museum own={isMe} uid={uid} /> : <Empty icon={<Lock1 size={26} />} title="This Museum is private" text={`${user.name.split(' ')[0]} keeps their Museum private. Private isn’t the same as empty — they just haven’t shared it.`} />)}
+          {tab === 'Followers' && <FollowList uid={uid} own={isMe} mode="followers" />}
+          {tab === 'Following' && <FollowList uid={uid} own={isMe} mode="following" />}
           {tab === 'Raiders' && <RaidersList uid={uid} own={isMe} />}
           {tab === 'Raiding' && <RaidingList uid={uid} own={isMe} />}
         </motion.div>
@@ -301,6 +324,62 @@ function Museum({ own, uid }: { own: boolean; uid: string }) {
   )
 }
 
+/* ─────────── Followers / Following — the everyday graph ─────────── */
+function FollowList({ uid, own, mode }: { uid: string; own: boolean; mode: 'followers' | 'following' }) {
+  const myFollowers = useApp((s) => s.followers)
+  const myFollowing = useApp((s) => s.following)
+  const removeFollower = useApp((s) => s.removeFollower)
+  const startConv = useApp((s) => s.startConversation)
+  const toast = useApp((s) => s.toast)
+  const nav = useNavigate()
+  const [q, setQ] = useState('')
+  const others = USERS.filter((u) => u.id !== uid)
+  const ids = own ? (mode === 'followers' ? myFollowers : myFollowing) : (mode === 'followers' ? others.slice(2, 12) : others.filter((u) => u.role === 'artist' || u.verified).slice(0, 9)).map((u) => u.id)
+  const list = ids.map(getUser).filter((u) => u && (u.name + u.username).toLowerCase().includes(q.toLowerCase()))
+  const title = mode === 'followers' ? 'Followers' : 'Following'
+  return (
+    <div className="stack gap-4" style={{ maxWidth: 760 }}>
+      <div className="stack gap-1">
+        <h2 className="h3">{title}</h2>
+        <span className="small muted">{mode === 'followers' ? `People who keep up with ${own ? 'your' : 'their'} posts.` : `People ${own ? 'you keep' : 'this person keeps'} up with — their posts show on Home.`}</span>
+      </div>
+      <Input placeholder={`Search ${title.toLowerCase()}`} value={q} onChange={(e) => setQ(e.target.value)} icon={<SearchNormal1 size={16} color="var(--text-4)" />} />
+      {list.length === 0 && <Empty icon={<ProfileIcon size={26} />} title={q ? 'No one matches' : mode === 'followers' ? 'No followers yet' : 'Not following anyone yet'} text={q ? 'Try a different name.' : mode === 'followers' ? 'When people follow you, they’ll appear here.' : 'Follow friends, artists and storytellers to fill your Home.'} action={!q && mode === 'following' ? <Link to="/discover/people" className="btn btn-primary btn-sm">Find people to follow</Link> : undefined} />}
+      <AnimatePresence initial={false}>
+        {list.map((u) => (
+          <motion.div layout key={u!.id} className="panel row gap-3" style={{ padding: 12 }} exit={{ opacity: 0, x: -30 }}>
+            <Avatar user={u} size={44} />
+            <Link to={`/u/${u!.id}`} className="stack grow" style={{ minWidth: 0 }}>
+              <span className="small strong row gap-1">
+                {u!.name} {u!.flag} {u!.verified && <VerifiedMark size={12} />}
+              </span>
+              <span className="xs faint">@{u!.username}</span>
+            </Link>
+            {own && mode === 'followers' && (
+              <button className="btn btn-secondary btn-xs" onClick={() => nav(`/messages/${startConv(u!.id)}`)}>
+                Message
+              </button>
+            )}
+            <FollowButton userId={u!.id} size="sm" />
+            {own && mode === 'followers' && (
+              <button
+                className="icon-btn sm"
+                aria-label={`Remove ${u!.name}`}
+                onClick={() => {
+                  removeFollower(u!.id)
+                  toast(`${u!.name} was removed from your followers`)
+                }}
+              >
+                <UserRemove size={16} />
+              </button>
+            )}
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </div>
+  )
+}
+
 /* ─────────── Screen 20 — Raiders ─────────── */
 function RaidersList({ uid, own }: { uid: string; own: boolean }) {
   const myRaiders = useApp((s) => s.raiders)
@@ -315,7 +394,7 @@ function RaidersList({ uid, own }: { uid: string; own: boolean }) {
     <div className="stack gap-4" style={{ maxWidth: 760 }}>
       <div className="stack gap-1">
         <h2 className="h3">Raiders</h2>
-        <span className="small muted">Raiders receive first-hand notifications when {own ? 'you upload' : 'this creator uploads'} a Scroll.</span>
+        <span className="small muted">Raiders targeted {own ? 'you' : 'this creator'} on purpose — they get every Scroll {own ? 'you upload' : 'this creator uploads'}, first-hand. Separate from followers.</span>
       </div>
       <Input placeholder="Search Raiders" value={q} onChange={(e) => setQ(e.target.value)} icon={<SearchNormal1 size={16} color="var(--text-4)" />} />
       {list.length === 0 && <Empty icon={<ProfileIcon size={26} />} title={q ? 'No Raiders match' : 'No Raiders yet'} text={q ? 'Try a different name.' : 'When people raid you, they’ll appear here.'} />}
@@ -368,9 +447,9 @@ function RaidingList({ uid, own }: { uid: string; own: boolean }) {
     <div className="stack gap-4" style={{ maxWidth: 760 }}>
       <div className="stack gap-1">
         <h2 className="h3">Raiding</h2>
-        <span className="small muted">{own ? 'People you’re raiding — you get their Scrolls first-hand.' : 'Creators this person raids.'}</span>
+        <span className="small muted">{own ? 'Creators you’re raiding — their Scrolls come to you first-hand. Separate from who you follow.' : 'Creators this person raids for their Scrolls.'}</span>
       </div>
-      {list.length === 0 && <Empty icon={<ProfileIcon size={26} />} title="Not raiding anyone yet" text="Raid storytellers and Historians to get their Scrolls first-hand." action={<Link to="/discover/people" className="btn btn-primary btn-sm">Find people to Raid</Link>} />}
+      {list.length === 0 && <Empty icon={<ProfileIcon size={26} />} title="Not raiding anyone yet" text="Raid storytellers and Historians to get their Scrolls first-hand." action={<Link to="/scrolls" className="btn btn-primary btn-sm">Find creators to Raid</Link>} />}
       <AnimatePresence initial={false}>
         {list.map((u) => {
           const isMuted = muted.includes(u!.id)
@@ -428,6 +507,7 @@ const EDIT_SECTIONS = [
   { id: 'family', label: 'Family', icon: Crown1 },
   { id: 'social', label: 'Social links', icon: Global },
   { id: 'avatar', label: 'Avatar', icon: Brush2 },
+  { id: 'emoji', label: 'Emoji', icon: EmojiHappy },
   { id: 'tune', label: 'Profile Tune', icon: Music },
   { id: 'notifications', label: 'Notifications', icon: Notification },
   { id: 'privacy', label: 'Privacy', icon: Lock1 },
@@ -444,6 +524,7 @@ export function ProfileEditor() {
   const fileRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
     if (section === 'avatar') nav('/profile/avatar', { replace: true })
+    if (section === 'emoji') nav('/profile/emoji', { replace: true })
     if (section === 'tune') nav('/profile/tune', { replace: true })
     if (section === 'notifications') nav('/settings/notifications', { replace: true })
     if (section === 'privacy') nav('/settings/privacy', { replace: true })
@@ -497,6 +578,9 @@ export function ProfileEditor() {
                     </button>
                     <Link to="/profile/avatar" className="link xs">
                       Or design a cultural avatar
+                    </Link>
+                    <Link to="/profile/emoji" className="link xs">
+                      Or create your emoji
                     </Link>
                   </div>
                   <input

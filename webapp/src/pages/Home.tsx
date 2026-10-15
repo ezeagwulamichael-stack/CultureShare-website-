@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
-import { Book1, Clock, Gallery, ShieldTick, ArrowRight2, Note } from 'iconsax-react'
+import { Clock, Gallery, ShieldTick, ArrowRight2, Note, People } from 'iconsax-react'
 import { useApp } from '../store/useApp'
 import { useUI } from '../store/useUI'
 import { TOPICS, USERS } from '../data/seed'
-import type { Post, Scroll } from '../data/types'
+import type { Post } from '../data/types'
 import { Page } from '../components/Shell'
-import { PostCard, ScrollCard } from '../components/content'
-import { Avatar, CardSkeleton, RaidButton, SectionHead, StatusRing, Tabs, Empty } from '../components/ui'
+import { PostCard } from '../components/content'
+import { Avatar, CardSkeleton, FollowButton, SectionHead, StatusRing, Tabs, Empty } from '../components/ui'
 import { compact, getUser } from '../lib/util'
 
 export function useBoot(ms = 550) {
@@ -72,7 +72,6 @@ function Composer() {
         </button>
       </div>
       <div className="row gap-2 wrap mt-3" style={{ paddingLeft: 54 }}>
-        {btn(<Book1 size={18} variant="Bulk" />, 'Scroll', '/create/scroll', 'var(--brand-gold)')}
         {btn(<Gallery size={18} variant="Bulk" />, 'Photo post', '/create/post', '#22c55e')}
         {btn(<Note size={18} variant="Bulk" />, 'Post', '/create/post', '#38bdf8')}
         {btn(<Clock size={18} variant="Bulk" />, 'Status', '/create/status', '#f472b6')}
@@ -81,14 +80,15 @@ function Composer() {
   )
 }
 
-function SuggestedRaiders({ inline }: { inline?: boolean }) {
-  const raiding = useApp((s) => s.raiding)
-  const list = USERS.filter((u) => u.role !== 'artist' && !raiding.includes(u.id)).slice(0, inline ? 4 : 5)
+/** Everyday accounts to keep up with — artists and celebrities included. */
+function SuggestedFollows({ inline }: { inline?: boolean }) {
+  const following = useApp((s) => s.following)
+  const list = USERS.filter((u) => !following.includes(u.id)).sort((a, b) => b.followers - a.followers).slice(0, inline ? 4 : 5)
   if (!list.length) return null
   if (inline) {
     return (
       <div className="card" style={{ padding: 18 }}>
-        <SectionHead title="People to Raid" to="/discover/people" />
+        <SectionHead title="People to follow" to="/discover/people" />
         <div className="grid-4" style={{ gap: 10 }}>
           {list.map((u) => (
             <Link key={u.id} to={`/u/${u.id}`} className="person-card" style={{ padding: '16px 8px 12px' }}>
@@ -97,9 +97,9 @@ function SuggestedRaiders({ inline }: { inline?: boolean }) {
                 {u.name}
               </span>
               <span className="xs faint">
-                {u.flag} {u.tribe}
+                {u.flag} {u.role === 'artist' ? 'Artist' : u.tribe}
               </span>
-              <RaidButton userId={u.id} size="sm" />
+              <FollowButton userId={u.id} size="sm" />
             </Link>
           ))}
         </div>
@@ -108,7 +108,7 @@ function SuggestedRaiders({ inline }: { inline?: boolean }) {
   }
   return (
     <div className="panel panel-pad">
-      <SectionHead title="Suggested Raiders" to="/discover/people" />
+      <SectionHead title="Who to follow" to="/discover/people" />
       <div className="stack gap-3">
         {list.map((u) => (
           <div key={u.id} className="row gap-3">
@@ -119,9 +119,9 @@ function SuggestedRaiders({ inline }: { inline?: boolean }) {
               <span className="small strong ellipsis">
                 {u.name} {u.flag}
               </span>
-              <span className="xs faint ellipsis">{u.role === 'historian' ? 'Historian · ' : ''}{u.tagline}</span>
+              <span className="xs faint ellipsis">{u.role === 'historian' ? 'Historian · ' : ''}{u.tagline} · {compact(u.followers)} followers</span>
             </Link>
-            <RaidButton userId={u.id} size="sm" />
+            <FollowButton userId={u.id} size="sm" />
           </div>
         ))}
       </div>
@@ -182,7 +182,7 @@ function TrendingRail() {
             <span className="stack grow" style={{ minWidth: 0 }}>
               <span className="small strong ellipsis">{t.name}</span>
               <span className="xs faint">
-                {t.posts} posts · {t.scrolls} Scrolls
+                {t.posts} posts
               </span>
             </span>
           </Link>
@@ -196,7 +196,7 @@ function VerifyPrompt() {
   const v = useApp((s) => s.verification.state)
   if (v === 'approved') return null
   const copy: Record<string, string> = {
-    not_started: 'Verify your African identity to upload Scrolls and earn the verified mark.',
+    not_started: 'Verify your African identity to earn the verified mark on your profile.',
     in_progress: 'You started African verification. Pick up where you left off.',
     submitted: 'Your verification is submitted.',
     under_review: 'Your verification is under review — usually within 24 hours.',
@@ -220,7 +220,7 @@ export function HomeRail() {
   return (
     <>
       <VerifyPrompt />
-      <SuggestedRaiders />
+      <SuggestedFollows />
       <CommunitiesRail />
       <TrendingRail />
       <p className="xs faint" style={{ padding: '0 4px' }}>
@@ -230,41 +230,34 @@ export function HomeRail() {
   )
 }
 
-/* ─────────── Screen 08 — Home feed ─────────── */
-type FeedItem = { kind: 'scroll'; s: Scroll } | { kind: 'post'; p: Post } | { kind: 'raiders' } | { kind: 'communities' }
+/* ─────────── Screen 08 — Home feed ───────────
+   Home is for regular posts only. Scrolls and reading live in the Scrolls section. */
+type FeedItem = { kind: 'post'; p: Post } | { kind: 'follows' } | { kind: 'communities' }
 
 export function Home() {
-  const scrolls = useApp((s) => s.scrolls)
   const posts = useApp((s) => s.posts)
-  const raiding = useApp((s) => s.raiding)
-  const prefs = useApp((s) => s.prefs)
+  const following = useApp((s) => s.following)
   const me = useApp((s) => s.me)
-  const [tab, setTab] = useState<'For you' | 'Raiding' | 'Latest'>('For you')
+  const [tab, setTab] = useState<'For you' | 'Following' | 'Latest'>('For you')
   const ready = useBoot()
   const nav = useNavigate()
 
   const feed = useMemo<FeedItem[]>(() => {
-    const pub = scrolls.filter((s) => s.status === 'published')
-    let sc = pub
-    if (tab === 'Raiding') sc = pub.filter((s) => raiding.includes(s.creatorId))
+    let ps = posts.filter((p) => !p.communityId && !p.announcement)
+    if (tab === 'Following') ps = ps.filter((p) => following.includes(p.authorId) || p.authorId === 'me')
     if (tab === 'For you') {
-      const score = (s: Scroll) => (prefs.cultures.includes(s.tribe) ? 3 : 0) + (raiding.includes(s.creatorId) ? 2 : 0) + (s.darkZone ? -2 : 0) + s.likes / 10000
-      sc = [...pub].sort((a, b) => score(b) - score(a))
+      const score = (p: Post) => (p.authorId === 'me' ? 4 : 0) + (following.includes(p.authorId) ? 2 : 0) + Math.log10(p.likes + 10) - (Date.now() - p.createdAt) / (24 * 3600_000)
+      ps = [...ps].sort((a, b) => score(b) - score(a))
     }
-    if (tab === 'Latest') sc = [...pub].sort((a, b) => b.createdAt - a.createdAt)
-    const ps = posts.filter((p) => !p.communityId && (tab !== 'Raiding' || raiding.includes(p.authorId) || p.authorId === 'me'))
+    if (tab === 'Latest') ps = [...ps].sort((a, b) => b.createdAt - a.createdAt)
     const out: FeedItem[] = []
-    let pi = 0
-    sc.forEach((s, k) => {
-      out.push({ kind: 'scroll', s })
-      if (k % 2 === 1 && ps[pi]) out.push({ kind: 'post', p: ps[pi++] })
-      if (k === 2 && tab !== 'Raiding') out.push({ kind: 'raiders' })
-      if (k === 5 && tab !== 'Raiding') out.push({ kind: 'communities' })
+    ps.forEach((p, k) => {
+      out.push({ kind: 'post', p })
+      if (k === 2 && tab !== 'Following') out.push({ kind: 'follows' })
+      if (k === 6 && tab !== 'Following') out.push({ kind: 'communities' })
     })
-    while (ps[pi]) out.push({ kind: 'post', p: ps[pi++] })
-    // my own posts first in Latest
     return out
-  }, [scrolls, posts, raiding, prefs.cultures, tab])
+  }, [posts, following, tab])
 
   return (
     <Page rail={<HomeRail />}>
@@ -276,23 +269,21 @@ export function Home() {
       </motion.div>
       <StatusRail />
       <Composer />
-      <Tabs tabs={['For you', 'Raiding', 'Latest'] as const} value={tab} onChange={setTab} />
+      <Tabs tabs={['For you', 'Following', 'Latest'] as const} value={tab} onChange={setTab} />
       {!ready ? (
         <div className="stack gap-5">
           <CardSkeleton />
           <CardSkeleton />
         </div>
       ) : feed.length === 0 ? (
-        <Empty icon={<Book1 size={26} variant="Bulk" />} title="Nothing from the people you raid yet" text="When creators you raid upload Scrolls, they’ll appear here first-hand. Raid a few storytellers to get started." action={<button className="btn btn-primary btn-sm" onClick={() => nav('/discover/people')}>Find people to Raid</button>} />
+        <Empty icon={<People size={26} variant="Bulk" />} title="No posts from people you follow yet" text="Follow friends, artists and storytellers to see their posts here." action={<button className="btn btn-primary btn-sm" onClick={() => nav('/discover/people')}>Find people to follow</button>} />
       ) : (
         <div className="stack gap-5">
           {feed.map((it, k) =>
-            it.kind === 'scroll' ? (
-              <ScrollCard key={it.s.id} scroll={it.s} index={k} />
-            ) : it.kind === 'post' ? (
+            it.kind === 'post' ? (
               <PostCard key={it.p.id} post={it.p} index={k} />
-            ) : it.kind === 'raiders' ? (
-              <SuggestedRaiders key="raiders" inline />
+            ) : it.kind === 'follows' ? (
+              <SuggestedFollows key="follows" inline />
             ) : (
               <InlineCommunities key="comms" />
             ),

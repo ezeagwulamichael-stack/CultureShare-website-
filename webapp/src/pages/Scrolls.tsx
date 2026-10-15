@@ -17,11 +17,13 @@ import { StatusRail, useBoot } from './Home'
 /* ─────────── Scrolls tab ─────────── */
 export function ScrollsFeed() {
   const scrolls = useApp((s) => s.scrolls)
+  const raiding = useApp((s) => s.raiding)
+  const [from, setFrom] = useState<'Everyone' | 'Raiding'>('Everyone')
   const [kind, setKind] = useState<'All' | 'Reels' | 'Documentaries'>('All')
   const [cat, setCat] = useState('All')
   const ready = useBoot(450)
   const nav = useNavigate()
-  const list = scrolls.filter((s) => s.status === 'published' && (kind === 'All' || (kind === 'Reels' ? s.kind === 'reel' : s.kind === 'documentary')) && (cat === 'All' || s.category === cat))
+  const list = scrolls.filter((s) => s.status === 'published' && (from === 'Everyone' || raiding.includes(s.creatorId)) && (kind === 'All' || (kind === 'Reels' ? s.kind === 'reel' : s.kind === 'documentary')) && (cat === 'All' || s.category === cat))
   const cats = ['All', ...new Set(scrolls.filter((s) => s.status === 'published').map((s) => s.category))]
   return (
     <Page rail={<ScrollsRail />}>
@@ -35,6 +37,7 @@ export function ScrollsFeed() {
         }
       />
       <StatusRail />
+      <Tabs tabs={['Everyone', 'Raiding'] as const} value={from} onChange={setFrom} />
       <div className="row between wrap gap-3">
         <Segmented options={['All', 'Reels', 'Documentaries'] as const} value={kind} onChange={setKind} />
         <Link to="/scrolls/mine" className="link small row gap-1">
@@ -50,6 +53,8 @@ export function ScrollsFeed() {
       </div>
       {!ready ? (
         <CardSkeleton />
+      ) : list.length === 0 && from === 'Raiding' ? (
+        <Empty icon={<Book1 size={26} variant="Bulk" />} title="No Scrolls from creators you raid" text="Raid a creator to get their Scrolls first-hand. Raiding is separate from following — it’s how you go after someone’s Scrolls." action={<button className="btn btn-primary btn-sm" onClick={() => nav('/discover/people')}>Find creators to Raid</button>} />
       ) : list.length === 0 ? (
         <Empty icon={<Book1 size={26} variant="Bulk" />} title="No Scrolls here yet" text={`There are no ${kind === 'All' ? '' : kind.toLowerCase() + ' '}Scrolls in ${cat} yet. Be the first to document it.`} action={<button className="btn btn-primary btn-sm" onClick={() => nav('/create/scroll')}>Create a Scroll</button>} />
       ) : (
@@ -80,6 +85,7 @@ function ScrollsRail() {
           ))}
         </div>
       </div>
+      <CreatorsToRaid />
       <div className="panel panel-pad">
         <SectionHead title="Historians" to="/discover/people?role=historian" />
         <div className="stack gap-3">
@@ -89,6 +95,45 @@ function ScrollsRail() {
         </div>
       </div>
     </>
+  )
+}
+
+function CreatorsToRaid() {
+  const raiding = useApp((s) => s.raiding)
+  const scrolls = useApp((s) => s.scrolls)
+  const uploaders = [...new Set(scrolls.filter((s) => s.status === 'published' && !s.anonymous).map((s) => s.creatorId))]
+  const list = uploaders.filter((id) => id !== 'me' && !raiding.includes(id)).slice(0, 4)
+  if (!list.length) return null
+  return (
+    <div className="panel panel-pad">
+      <SectionHead title="Creators to Raid" to="/discover/people" />
+      <p className="xs muted" style={{ marginTop: -4, marginBottom: 12 }}>
+        Raid a creator to get every Scroll they upload, first-hand.
+      </p>
+      <div className="stack gap-3">
+        {list.map((id) => (
+          <RaidMini key={id} id={id} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function RaidMini({ id }: { id: string }) {
+  const u = useUser(id)
+  const count = useApp((s) => s.scrolls.filter((x) => x.creatorId === id && x.status === 'published').length)
+  if (!u) return null
+  return (
+    <div className="row gap-3">
+      <Avatar user={u} size={38} />
+      <Link to={`/u/${u.id}`} className="stack grow" style={{ minWidth: 0 }}>
+        <span className="small strong ellipsis">{u.name}</span>
+        <span className="xs faint ellipsis">
+          {count} Scroll{count === 1 ? '' : 's'} · {compact(u.raiders)} Raiders
+        </span>
+      </Link>
+      <RaidButton userId={u.id} size="sm" />
+    </div>
   )
 }
 

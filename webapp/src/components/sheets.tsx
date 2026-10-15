@@ -16,6 +16,8 @@ export function ShareSheet() {
   const scrolls = useApp((s) => s.scrolls)
   const raiding = useApp((s) => s.raiding)
   const raiders = useApp((s) => s.raiders)
+  const following = useApp((s) => s.following)
+  const followers = useApp((s) => s.followers)
   const communities = useApp((s) => s.communities)
   const joined = useApp((s) => s.joined)
   const shareTo = useApp((s) => s.shareToConversation)
@@ -24,7 +26,7 @@ export function ShareSheet() {
   const [picked, setPicked] = useState<string[]>([])
   const [note, setNote] = useState('')
   const scroll = scrolls.find((x) => x.id === share?.id)
-  const people = useMemo(() => [...new Set([...raiding, ...raiders])].map(getUser).filter(Boolean).filter((u) => u!.name.toLowerCase().includes(q.toLowerCase())), [raiding, raiders, q])
+  const people = useMemo(() => [...new Set([...following, ...followers, ...raiding, ...raiders])].map(getUser).filter(Boolean).filter((u) => u!.name.toLowerCase().includes(q.toLowerCase())), [following, followers, raiding, raiders, q])
   const url = `${location.origin}/${share?.kind === 'profile' ? 'u' : share?.kind === 'post' ? 'post' : 'scroll'}/${share?.id}`
   const done = () => {
     setPicked([])
@@ -91,7 +93,7 @@ export function ShareSheet() {
           <ExportSquare size={16} /> External share
         </button>
       </div>
-      <Input placeholder="Search Raiders and people you raid" value={q} onChange={(e) => setQ(e.target.value)} icon={<SearchNormal1 size={16} color="var(--text-4)" />} />
+      <Input placeholder="Search people you follow" value={q} onChange={(e) => setQ(e.target.value)} icon={<SearchNormal1 size={16} color="var(--text-4)" />} />
       <p className="eyebrow mt-4">Message</p>
       <div className="stack gap-1 mt-2">
         {people.map((u) => {

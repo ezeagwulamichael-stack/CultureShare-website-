@@ -9,7 +9,8 @@ export const asset = (file: string) => `${import.meta.env.BASE_URL}img/${file}`
 export const img = (name: string) => asset(`${name}.webp`)
 
 /* ─────────── People ─────────── */
-export const USERS: User[] = [
+type SeedUser = Omit<User, 'followers' | 'following'>
+const PEOPLE: SeedUser[] = [
   { id: 'amaradia', name: 'Amara Dia', username: 'amaradia123', avatar: img('s-amara'), flag: '🇬🇭', country: 'Ghana', state: 'Ashanti', tribe: 'Akan', tagline: 'Forever a Ghanaian', bio: 'West African textile scholar. Kente, adinkra and the cloth that speaks.', role: 'creator', verified: true, raiders: 12480, raiding: 312, specialty: 'West African textiles', cover: img('aso-oke-women') },
   { id: 'kofi', name: 'Dr. Kofi Mensah', username: 'drkofi', avatar: img('p-abena'), flag: '🇬🇭', country: 'Ghana', state: 'Ashanti', tribe: 'Akan', tagline: 'Verified Historian', bio: 'Historian & cultural archivist. Documenting Akan traditions for future generations.', role: 'historian', verified: true, raiders: 38211, raiding: 140, specialty: 'West African History', cover: img('akan-festival') },
   { id: 'amara-okafor', name: 'Amara Okafor', username: 'amaraokafor', avatar: img('p-amara'), flag: '🇳🇬', country: 'Nigeria', state: 'Oyo', tribe: 'Yoruba', tagline: 'Yoruba Oral Tradition', bio: 'Keeper of oríkì — praise poetry passed from my grandmother’s mouth to mine.', role: 'creator', verified: true, raiders: 8210, raiding: 401, specialty: 'Yoruba Oral Tradition' },
@@ -34,6 +35,17 @@ export const USERS: User[] = [
   { id: 'blackcoffee', name: 'Black Coffee', username: 'realblackcoffee', avatar: img('a-blackcoffee'), flag: '🇿🇦', country: 'South Africa', tribe: 'Xhosa', tagline: 'Artist', role: 'artist', verified: true, raiders: 650_000, raiding: 21 },
   { id: 'khaled', name: 'Khaled', username: 'khaled', avatar: img('a-khaled'), flag: '🇩🇿', country: 'Algeria', tribe: 'Arab-Berber', tagline: 'Artist', role: 'artist', verified: true, raiders: 540_000, raiding: 18 },
 ]
+
+/*
+ * Following is the everyday graph, so every account has more followers than
+ * Raiders. Artists are followed by fans; few of them upload Scrolls, so their
+ * Raider counts stay small.
+ */
+export const USERS: User[] = PEOPLE.map((u) =>
+  u.role === 'artist'
+    ? { ...u, followers: u.raiders, following: u.raiding * 9, raiders: Math.round(u.raiders * 0.03) }
+    : { ...u, followers: Math.round(u.raiders * 3.2 + 140), following: u.raiding * 2 + 37 },
+)
 
 export const FEATURED_ARTISTS = ['burna', 'tems', 'femi', 'yemi', 'blackcoffee', 'khaled']
 
@@ -80,6 +92,16 @@ export const POSTS: Post[] = [
   { id: 'p4', authorId: 'yuki', text: 'Kente weaving is more than cloth — it is language. Each pattern tells the story of our ancestors and speaks across generations.', images: [img('chief-on-horse')], createdAt: ago(6), likes: 2841, comments: 123, saves: 318, visibility: 'public' },
   { id: 'p5', authorId: 'danilo', text: 'Kente weaving is more than cloth — it is language. Each pattern tells the story of our ancestors and speaks across generations. Field notes from Bonwire, where every family has a loom.', images: [], createdAt: ago(8), likes: 1201, comments: 44, saves: 51, visibility: 'public' },
   { id: 'p6', authorId: 'zola', text: 'Visited the Mgungundlovu heritage site this weekend. Standing where Dingane’s kraal stood is a different kind of history lesson.', images: [img('warriors-film'), img('sisters')], createdAt: ago(14), likes: 902, comments: 31, saves: 77, visibility: 'public' },
+  { id: 'p8', authorId: 'burna', text: 'Lagos, you showed up tonight. Every time I hear a crowd sing in Yoruba I remember where this sound comes from. Ọmọ Ìyá mi, thank you.', images: [img('yoruba-drummers')], createdAt: ago(1), likes: 48210, comments: 2304, saves: 1210, visibility: 'public' },
+  { id: 'p9', authorId: 'adaeze', text: 'Sunday rule in my mother’s house: nobody touches the ofe onugbu until Papa has tasted it. Still true at 31.', images: [img('ofe-onugbu')], createdAt: ago(3), likes: 3120, comments: 210, saves: 402, visibility: 'public' },
+  { id: 'p10', authorId: 'tems', text: 'Writing in the studio with my aunty’s old highlife records on repeat. Some melodies just live in your blood.', images: [], createdAt: ago(5), likes: 31544, comments: 1280, saves: 640, visibility: 'public' },
+  { id: 'p11', authorId: 'kamau', text: 'Golden hour in Kajiado. My uncle says the cattle know the way home better than any of us.', images: [img('maasai-ceremony')], createdAt: ago(7), likes: 1984, comments: 88, saves: 140, visibility: 'public' },
+  { id: 'p12', authorId: 'sade', text: 'Owambe season is here. Who else’s aunty has already asked about the aso-ebi colour? 😂', images: [img('aso-oke-women')], createdAt: ago(9), likes: 4410, comments: 512, saves: 96, visibility: 'public' },
+  { id: 'p13', authorId: 'blackcoffee', text: 'Soweto to the world. Never forget the townships that raised this music.', images: [], createdAt: ago(11), likes: 22901, comments: 870, saves: 310, visibility: 'public' },
+  { id: 'p14', authorId: 'imane', text: 'My grandmother drew this henna pattern on my hands from memory. She says it is older than the village.', images: [img('amazigh-brides')], createdAt: ago(16), likes: 1320, comments: 64, saves: 210, visibility: 'public' },
+  { id: 'p15', authorId: 'nana', text: 'Market day in Kumasi. If you have never bargained with a Kejetia trader, you have not truly been tested.', images: [img('green-fans')], createdAt: ago(20), likes: 870, comments: 45, saves: 22, visibility: 'public' },
+  { id: 'p16', authorId: 'tunde', text: 'Hot take: you cannot understand Afrobeats without listening to a full Fela record, start to finish, at least once.', images: [], createdAt: ago(26), likes: 2650, comments: 732, saves: 58, visibility: 'public' },
+  { id: 'p17', authorId: 'yemi', text: 'Rehearsal outfit check ✨ Ankara forever.', images: [img('beaded-bride')], createdAt: ago(30), likes: 18822, comments: 940, saves: 402, visibility: 'public' },
   { id: 'p7', authorId: 'amara-diallo', text: 'The Akan Heritage Festival Scroll competition is now open. Submit your best cultural documentation by 30 Jan.', images: [], createdAt: ago(1), likes: 410, comments: 22, saves: 15, communityId: 'akan-circle', visibility: 'public', announcement: true },
 ]
 
@@ -248,7 +270,8 @@ export const CONVERSATIONS: Conversation[] = [
 /* ─────────── Notifications ─────────── */
 export const NOTIFICATIONS: Notification[] = [
   { id: 'n1', type: 'scroll', actorId: 'amaradia', text: 'uploaded a new Scroll: “The Language of Kente”', at: ago(2), link: '/scroll/language-of-kente', read: false, image: img('aso-oke-women') },
-  { id: 'n2', type: 'raider', actorId: 'kwame', text: 'started raiding you', at: ago(3), link: '/u/kwame', read: false },
+  { id: 'n2', type: 'raider', actorId: 'kwame', text: 'started raiding you — they’ll get your Scrolls first-hand', at: ago(3), link: '/u/kwame', read: false },
+  { id: 'n2b', type: 'follower', actorId: 'sade', text: 'started following you', at: ago(4), link: '/u/sade', read: false },
   { id: 'n3', type: 'comment', actorId: 'nana', text: 'commented on a Scroll you saved: “Will you do one on Adinkra stamping next?”', at: ago(5), link: '/scroll/language-of-kente', read: false },
   { id: 'n4', type: 'message', actorId: 'kofi', text: 'pinned a Must Watch Reel in your messages', at: ago(3), link: '/messages/cv-kofi', read: true },
   { id: 'n5', type: 'community', actorId: 'amara-diallo', text: 'posted an announcement in Akan Heritage Circle', at: ago(8), link: '/communities/akan-circle', read: true },

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { asset } from '../data/seed'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
-import { Paperclip2, Gallery, Video, DocumentText, Send2, SearchNormal1, Messages2, Profile, Add, CloseCircle, Edit } from 'iconsax-react'
+import { Paperclip2, Gallery, Video, DocumentText, Send2, SearchNormal1, Messages2, Profile, Add, CloseCircle, Edit, Call, CallSlash, Sticker, Brush2 } from 'iconsax-react'
 import { useApp } from '../store/useApp'
 import type { Conversation, Message } from '../data/types'
 import { Avatar, Empty, Input, Modal, VerifiedMark, Tabs, Decision } from '../components/ui'
@@ -10,6 +10,9 @@ import { Menu } from '../components/content'
 import { PeoplePicker } from '../components/sheets'
 import { clock, cx, getUser, timeAgo, useUser } from '../lib/util'
 import { imageToDataUrl } from '../lib/media'
+import { CallScreen, type CallKind } from '../components/Call'
+import { Emoji } from '../components/Emoji'
+import { STICKERS, svgToDataUrl } from '../lib/emoji'
 
 const REPLIES = ['Ẹ ṣé! That means a lot.', 'Medaase — I’ll send you more soon.', 'Haha, my grandmother would say the same 😄', 'Let’s make a Scroll about this together.', 'Sharing this with my cousins now.', 'Asante sana 🙏🏾']
 
@@ -65,7 +68,7 @@ export function Messages() {
           ))}
         </div>
       </aside>
-      <section className="msg-thread">{active ? <Thread c={active} /> : <Empty icon={<Messages2 size={26} variant="Bulk" />} title="Your messages" text="Share Scrolls, voice notes and stories directly with the people you raid and your communities." action={<button className="btn btn-primary btn-sm" onClick={() => setNewOpen(true)}>New message</button>} />}</section>
+      <section className="msg-thread">{active ? <Thread c={active} /> : <Empty icon={<Messages2 size={26} variant="Bulk" />} title="Your messages" text="Share stories, stickers and Scrolls with the people you follow and your communities — or call them." action={<button className="btn btn-primary btn-sm" onClick={() => setNewOpen(true)}>New message</button>} />}</section>
       <aside className="msg-context">{active ? <Context c={active} /> : null}</aside>
       <Modal
         open={newOpen}
@@ -95,7 +98,17 @@ export function Messages() {
 function ConvRow({ c, active }: { c: Conversation; active: boolean }) {
   const { title, image, user } = useConvTitle(c)
   const last = c.messages.at(-1)
-  const preview = last ? (last.scrollId ? '📜 Shared a Scroll' : last.attachment ? `📎 ${last.attachment.name}` : last.text) : 'Say hello 👋🏾'
+  const preview = last
+    ? last.call
+      ? `${last.call.kind === 'video' ? '🎥 Video' : '📞 Voice'} call${last.call.missed ? ' · not answered' : ''}`
+      : last.scrollId
+        ? '📜 Shared a Scroll'
+        : last.attachment?.kind === 'sticker'
+          ? '😄 Sticker'
+          : last.attachment
+            ? `📎 ${last.attachment.name}`
+            : last.text
+    : 'Say hello 👋🏾'
   return (
     <Link to={`/messages/${c.id}`} className={cx('conv-row', active && 'active')}>
       {c.communityId ? <img src={image} alt="" style={{ width: 46, height: 46, borderRadius: 12, objectFit: 'cover', flex: 'none' }} /> : <Avatar user={user} size={46} />}
@@ -126,9 +139,12 @@ function Thread({ c }: { c: Conversation }) {
   const scrolls = useApp((s) => s.scrolls)
   const pin = useApp((s) => s.pinReel)
   const toast = useApp((s) => s.toast)
+  const logCall = useApp((s) => s.logCall)
   const { title, image, user, community } = useConvTitle(c)
   const [text, setText] = useState('')
   const [typing, setTyping] = useState(false)
+  const [call, setCall] = useState<CallKind | null>(null)
+  const [stickers, setStickers] = useState(false)
   const endRef = useRef<HTMLDivElement>(null)
   const imgRef = useRef<HTMLInputElement>(null)
   const vidRef = useRef<HTMLInputElement>(null)
@@ -174,6 +190,14 @@ function Thread({ c }: { c: Conversation }) {
           </span>
           <span className="xs faint">{typing ? <span className="gold">typing…</span> : community ? `${community.members.toLocaleString()} members` : `@${user?.username}`}</span>
         </Link>
+        <button className="icon-btn has-tip" aria-label={community ? 'Group voice call' : 'Voice call'} onClick={() => setCall('voice')}>
+          <Call size={20} />
+          <span className="tooltip">Voice call</span>
+        </button>
+        <button className="icon-btn has-tip" aria-label={community ? 'Group video call' : 'Video call'} onClick={() => setCall('video')}>
+          <Video size={20} />
+          <span className="tooltip">Video call</span>
+        </button>
         <Menu
           items={[
             ...(user ? [{ label: 'View profile', icon: <Profile size={16} />, onClick: () => nav(`/u/${user.id}`) }] : []),
@@ -221,6 +245,34 @@ function Thread({ c }: { c: Conversation }) {
         </AnimatePresence>
         <div ref={endRef} />
       </div>
+      <AnimatePresence>
+        {call && (
+          <CallScreen
+            kind={call}
+            title={title}
+            user={user}
+            image={image}
+            group={!!community}
+            onEnd={(r) => {
+              setCall(null)
+              logCall(c.id, { kind: r.kind, seconds: r.seconds, missed: !r.connected })
+              toast(r.connected ? 'Call ended' : 'Call cancelled')
+            }}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {stickers && (
+          <StickerTray
+            onClose={() => setStickers(false)}
+            onPick={(src, caption) => {
+              send(c.id, '', { kind: 'sticker', name: caption, src })
+              setStickers(false)
+              reply()
+            }}
+          />
+        )}
+      </AnimatePresence>
       <form
         className="composer"
         onSubmit={(e) => {
@@ -264,6 +316,10 @@ function Thread({ c }: { c: Conversation }) {
             }
           }}
         />
+        <button type="button" className={cx('icon-btn has-tip', stickers && 'gold')} aria-label="Emoji stickers" aria-expanded={stickers} onClick={() => setStickers((v) => !v)} style={stickers ? { color: 'var(--accent-text)' } : undefined}>
+          <Sticker size={20} />
+          <span className="tooltip">Your emoji stickers</span>
+        </button>
         <motion.button whileTap={{ scale: 0.9 }} className="icon-btn round" style={{ width: 44, height: 44, background: text.trim() ? 'var(--brand-gold-200)' : 'var(--surface-3)', color: text.trim() ? '#0a1800' : 'var(--text-3)' }} disabled={!text.trim()} aria-label="Send">
           <Send2 size={20} />
         </motion.button>
@@ -293,8 +349,18 @@ function MessageBubble({ m, community }: { m: Message; community: boolean }) {
           </div>
         </Link>
       )}
+      {m.call && (
+        <span className={cx('bubble row gap-2 call-log', mine ? 'mine' : 'theirs')}>
+          <span className={cx('call-log-icon', m.call.missed && 'missed')}>{m.call.missed ? <CallSlash size={16} /> : m.call.kind === 'video' ? <Video size={16} /> : <Call size={16} />}</span>
+          <span className="stack">
+            <span className="small strong">{m.call.kind === 'video' ? 'Video call' : 'Voice call'}</span>
+            <span className="xs" style={{ opacity: 0.75 }}>{m.call.missed ? 'Not answered' : formatDuration(m.call.seconds)}</span>
+          </span>
+        </span>
+      )}
       {m.attachment?.kind === 'image' && m.attachment.src && <img src={m.attachment.src} alt={m.attachment.name} style={{ maxWidth: 260, borderRadius: 14 }} />}
-      {m.attachment && m.attachment.kind !== 'image' && (
+      {m.attachment?.kind === 'sticker' && m.attachment.src && <img src={m.attachment.src} alt={`Sticker: ${m.attachment.name}`} width={132} height={132} />}
+      {m.attachment && m.attachment.kind !== 'image' && m.attachment.kind !== 'sticker' && (
         <span className={cx('bubble row gap-2', mine ? 'mine' : 'theirs')}>
           {m.attachment.kind === 'video' ? <Video size={18} /> : <DocumentText size={18} />} {m.attachment.name}
         </span>
@@ -312,7 +378,7 @@ function Context({ c }: { c: Conversation }) {
   const scrolls = useApp((s) => s.scrolls)
   const pin = useApp((s) => s.pinReel)
   const toast = useApp((s) => s.toast)
-  const raidingMe = useApp((s) => (user ? s.raiders.includes(user.id) || s.raiding.includes(user.id) : true))
+  const connected = useApp((s) => (user ? s.followers.includes(user.id) || s.following.includes(user.id) : true))
   const reels = scrolls.filter((s) => s.status === 'published' && s.kind === 'reel').slice(0, 6)
   const [pinOpen, setPinOpen] = useState(false)
   const media = c.messages.filter((m) => m.attachment?.src || m.scrollId)
@@ -331,14 +397,14 @@ function Context({ c }: { c: Conversation }) {
       <div className="stack gap-2">
         <span className="eyebrow">📌 Must Watch</span>
         <p className="xs muted">Pin a Reel to the top of this conversation.</p>
-        {raidingMe ? (
+        {connected ? (
           <button className="btn btn-outline-gold btn-sm" onClick={() => setPinOpen(true)}>
             <Add size={16} /> {c.pinnedScrollId ? 'Change pinned Reel' : 'Pin a Reel'}
           </button>
         ) : (
-          <p className="xs faint">Only Raiders can pin Must Watch Reels here.</p>
+          <p className="xs faint">Follow each other to pin Must Watch Reels here.</p>
         )}
-        <Decision>Which followers/Raiders may pin, and how many pins are allowed, should follow the mobile rule once confirmed.</Decision>
+        <Decision>Whether pinning needs a mutual follow or a Raid, and how many pins are allowed, should follow the mobile rule once confirmed.</Decision>
       </div>
       {media.length > 0 && (
         <div className="stack gap-2">
@@ -379,5 +445,63 @@ function Context({ c }: { c: Conversation }) {
         </div>
       </Modal>
     </div>
+  )
+}
+
+function formatDuration(sec: number) {
+  if (sec < 60) return `${sec}s`
+  const m = Math.floor(sec / 60)
+  return `${m}:${String(sec % 60).padStart(2, '0')}`
+}
+
+/** The user's emoji re-drawn as a sticker set. Picking one sends it as an image. */
+function StickerTray({ onPick, onClose }: { onPick: (src: string, caption: string) => void; onClose: () => void }) {
+  const emoji = useApp((s) => s.emoji)
+  const nav = useNavigate()
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', k)
+    return () => window.removeEventListener('keydown', k)
+  }, [onClose])
+  return (
+    <motion.div className="sticker-tray" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} transition={{ duration: 0.18 }}>
+      <div className="row between" style={{ marginBottom: 10 }}>
+        <span className="small strong">Your emoji stickers</span>
+        <span className="row gap-2">
+          {emoji && (
+            <Link to="/profile/emoji" className="link xs">
+              Edit emoji
+            </Link>
+          )}
+          <button className="icon-btn sm" aria-label="Close stickers" onClick={onClose}>
+            <CloseCircle size={16} />
+          </button>
+        </span>
+      </div>
+      {emoji ? (
+        <div className="sticker-grid">
+          {STICKERS.map((st) => (
+            <button
+              key={st.caption}
+              className="sticker-btn"
+              aria-label={`Send ${st.caption} sticker`}
+              onClick={(e) => {
+                const svg = e.currentTarget.querySelector('svg')
+                if (svg) onPick(svgToDataUrl(svg), st.caption)
+              }}
+            >
+              <Emoji config={emoji} expression={st.expression} caption={st.caption} bg="none" size={84} />
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="stack gap-3" style={{ alignItems: 'center', textAlign: 'center', padding: '8px 0 4px' }}>
+          <p className="small muted">Design an emoji that looks like you, and it turns into a sticker pack you can send here.</p>
+          <button className="btn btn-primary btn-sm" onClick={() => nav('/profile/emoji')}>
+            <Brush2 size={16} /> Design your emoji
+          </button>
+        </div>
+      )}
+    </motion.div>
   )
 }

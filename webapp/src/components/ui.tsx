@@ -88,6 +88,36 @@ export function NameLine({ user, size = 'md', link = true }: { user: User; size?
   )
 }
 
+/** Follow — the everyday action for keeping up with someone's posts. */
+export function FollowButton({ userId, size }: { userId: string; size?: 'sm' }) {
+  const following = useApp((s) => s.following.includes(userId))
+  const toggleFollow = useApp((s) => s.toggleFollow)
+  const toast = useApp((s) => s.toast)
+  const user = useUser(userId)
+  if (userId === 'me' || userId === 'rogue') return null
+  return (
+    <motion.button
+      whileTap={{ scale: 0.92 }}
+      className={cx('follow-btn', following && 'is-following')}
+      style={size === 'sm' ? { height: 26, minWidth: 64, padding: '0 10px' } : undefined}
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        toggleFollow(userId)
+        toast(following ? `You unfollowed ${user?.name ?? 'this account'}` : `Following ${user?.name ?? 'account'} — their posts will show on your Home`, following ? 'info' : 'success')
+      }}
+      aria-pressed={following}
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span key={following ? 'on' : 'off'} initial={{ y: 6, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -6, opacity: 0 }} transition={{ duration: 0.15 }}>
+          {following ? 'Following' : 'Follow'}
+        </motion.span>
+      </AnimatePresence>
+    </motion.button>
+  )
+}
+
+/** Raid — the occasional, deliberate action of targeting a creator to get their Scrolls first-hand. */
 export function RaidButton({ userId, solid, size }: { userId: string; solid?: boolean; size?: 'sm' }) {
   const raiding = useApp((s) => s.raiding.includes(userId))
   const toggleRaid = useApp((s) => s.toggleRaid)
@@ -103,7 +133,7 @@ export function RaidButton({ userId, solid, size }: { userId: string; solid?: bo
         e.preventDefault()
         e.stopPropagation()
         toggleRaid(userId)
-        toast(raiding ? `You stopped raiding ${user?.name ?? 'this creator'}` : `Raiding ${user?.name ?? 'creator'} — you’ll get their Scrolls first-hand`, raiding ? 'info' : 'success')
+        toast(raiding ? `You stopped raiding ${user?.name ?? 'this creator'}` : `Raiding ${user?.name ?? 'creator'} — their Scrolls come to you first-hand`, raiding ? 'info' : 'success')
       }}
       aria-pressed={raiding}
     >

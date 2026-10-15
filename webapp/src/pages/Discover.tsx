@@ -8,8 +8,8 @@ import { CATEGORIES, COUNTRIES, DISCOVER_THEMES, HISTORIAN_SCROLLS, TOPICS, TREN
 import type { Scroll } from '../data/types'
 import { Page, PageHeader } from '../components/Shell'
 import { PostCard, ScrollCard, ScrollRow, ScrollTeaser, ScrollTile } from '../components/content'
-import { Avatar, Drawer, Empty, HistorianBadge, Input, RaidButton, SectionHead, Select, Skeleton, Tabs, VerifiedMark } from '../components/ui'
-import { compact, cx } from '../lib/util'
+import { Avatar, Drawer, Empty, FollowButton, HistorianBadge, Input, RaidButton, SectionHead, Select, Skeleton, Tabs, VerifiedMark } from '../components/ui'
+import { canRaid, compact, cx } from '../lib/util'
 import { useBoot } from './Home'
 
 /* ─────────── Screen 14 — Discover culture (editorial) ─────────── */
@@ -498,7 +498,10 @@ function PersonResult({ id }: { id: string }) {
         {u.flag} {u.tribe} · {u.country}
       </span>
       {u.role === 'historian' && <HistorianBadge />}
-      <RaidButton userId={u.id} size="sm" />
+      <span className="row gap-2" style={{ justifyContent: 'center' }}>
+        <FollowButton userId={u.id} size="sm" />
+        {canRaid(u) && <RaidButton userId={u.id} size="sm" />}
+      </span>
     </Link>
   )
 }
@@ -508,13 +511,13 @@ export function DiscoverPeople() {
   const [params] = useSearchParams()
   const prefs = useApp((s) => s.prefs)
   const role = params.get('role')
-  const [filter, setFilter] = useState<'All' | 'Historians' | 'Storytellers'>(role === 'historian' ? 'Historians' : 'All')
-  const all = USERS.filter((u) => u.role !== 'artist' && (filter === 'All' || (filter === 'Historians' ? u.role === 'historian' : u.role === 'creator')))
+  const [filter, setFilter] = useState<'All' | 'Historians' | 'Storytellers' | 'Artists'>(role === 'historian' ? 'Historians' : 'All')
+  const all = USERS.filter((u) => filter === 'All' || (filter === 'Historians' ? u.role === 'historian' : filter === 'Artists' ? u.role === 'artist' : u.role === 'creator'))
   const recommended = all.filter((u) => u.verified).slice(0, 8)
   const byInterest = all.filter((u) => prefs.cultures.includes(u.tribe ?? '') || prefs.interests.length > 0).filter((u) => !recommended.includes(u))
   return (
     <Page wide>
-      <PageHeader title="Discover People" sub="Raid creators to receive their Scrolls first-hand. Raiding is how CultureShare follows." actions={<Tabs tabs={['All', 'Historians', 'Storytellers'] as const} value={filter} onChange={setFilter} />} />
+      <PageHeader title="Discover People" sub="Follow people to keep up with their posts. Raid a creator when you want their Scrolls first-hand." actions={<Tabs tabs={['All', 'Historians', 'Storytellers', 'Artists'] as const} value={filter} onChange={setFilter} />} />
       <section>
         <SectionHead title="Recommended for you" />
         <div className="grid-4">

@@ -9,10 +9,11 @@ import { Page, PageHeader } from '../components/Shell'
 import { Avatar, Empty, Tabs } from '../components/ui'
 import { cx, timeAgo, useUser } from '../lib/util'
 
-const FILTERS = ['All', 'Scrolls', 'Raiders', 'Messages', 'Communities'] as const
+const FILTERS = ['All', 'Followers', 'Scrolls', 'Raiders', 'Messages', 'Communities'] as const
 type F = (typeof FILTERS)[number]
 const MATCH: Record<F, NotificationType[]> = {
-  All: ['scroll', 'raider', 'comment', 'message', 'community', 'verification', 'review'],
+  All: ['scroll', 'raider', 'follower', 'comment', 'message', 'community', 'verification', 'review'],
+  Followers: ['follower'],
   Scrolls: ['scroll', 'review', 'comment'],
   Raiders: ['raider'],
   Messages: ['message'],
@@ -83,6 +84,7 @@ function NotificationRow({ n, onOpen, k }: { n: ReturnType<typeof useApp.getStat
     scroll: <img src={asset('scroll-icon.webp')} alt="" width={14} />,
     review: <Timer1 size={12} variant="Bold" />,
     raider: <ProfileAdd size={12} variant="Bold" />,
+    follower: <ProfileAdd size={12} variant="Bold" />,
     comment: <Message size={12} variant="Bold" />,
     message: <Message size={12} variant="Bold" />,
     community: <People size={12} variant="Bold" />,

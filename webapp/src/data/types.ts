@@ -15,8 +15,12 @@ export interface User {
   bio?: string
   role: Role
   verified: boolean
+  /** People who raid this creator — they get the creator's Scrolls first-hand. */
   raiders: number
   raiding: number
+  /** The everyday social graph: Follow to keep up with someone's posts. */
+  followers: number
+  following: number
   specialty?: string
   website?: string
   cover?: string
@@ -130,8 +134,10 @@ export interface Message {
   from: Id
   text: string
   at: number
-  attachment?: { kind: 'image' | 'video' | 'document'; name: string; src?: string }
+  attachment?: { kind: 'image' | 'video' | 'document' | 'sticker'; name: string; src?: string }
   scrollId?: Id
+  /** A voice or video call logged in the thread once it ends. */
+  call?: { kind: 'voice' | 'video'; seconds: number; missed?: boolean }
 }
 
 export interface Conversation {
@@ -143,7 +149,7 @@ export interface Conversation {
   unread: number
 }
 
-export type NotificationType = 'scroll' | 'raider' | 'comment' | 'message' | 'community' | 'verification' | 'review'
+export type NotificationType = 'scroll' | 'raider' | 'follower' | 'comment' | 'message' | 'community' | 'verification' | 'review'
 
 export interface Notification {
   id: Id

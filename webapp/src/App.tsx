@@ -22,6 +22,7 @@ const DiscoverPeople = lazy(() => import('./pages/Discover').then((m) => ({ defa
 const Profile = lazy(() => import('./pages/Profile').then((m) => ({ default: m.Profile })))
 const ProfileEditor = lazy(() => import('./pages/Profile').then((m) => ({ default: m.ProfileEditor })))
 const AvatarCustomizer = lazy(() => import('./pages/Profile').then((m) => ({ default: m.AvatarCustomizer })))
+const EmojiStudio = lazy(() => import('./pages/Emoji').then((m) => ({ default: m.EmojiStudio })))
 const ProfileTunePage = lazy(() => import('./pages/Profile').then((m) => ({ default: m.ProfileTunePage })))
 const Messages = lazy(() => import('./pages/Messages').then((m) => ({ default: m.Messages })))
 const Notifications = lazy(() => import('./pages/Notifications').then((m) => ({ default: m.Notifications })))
@@ -112,6 +113,7 @@ export default function App() {
           <Route path="/profile/edit" element={<ProfileEditor />} />
           <Route path="/profile/edit/:section" element={<ProfileEditor />} />
           <Route path="/profile/avatar" element={<AvatarCustomizer />} />
+          <Route path="/profile/emoji" element={<EmojiStudio />} />
           <Route path="/profile/tune" element={<ProfileTunePage />} />
           <Route path="/profile/:tab" element={<Profile />} />
           <Route path="/u/:id" element={<Profile />} />
